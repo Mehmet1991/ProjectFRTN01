@@ -8,7 +8,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import java.awt.Choice;
+import javax.swing.JSlider;
+import javax.swing.JSeparator;
 
 
 public class MainGUI {
@@ -164,6 +170,5 @@ public class MainGUI {
 		lblParameters.setFont(new Font("Dialog", Font.BOLD, 17));
 		lblParameters.setBounds(33, 22, 156, 41);
 		frmStateFeedbackController.getContentPane().add(lblParameters);
-
 	}
 }
