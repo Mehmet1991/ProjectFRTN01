@@ -87,21 +87,25 @@ public class MainGUI {
 		frmStateFeedbackController.getContentPane().add(lblNewLabel_3);
 		
 		txtA = new JTextField();
+		txtA.setToolTipText("Write the matrix in MATLAB syntax, e.g. [1 2 3; 4 5 6; 6 7 8] for a 3 x 3 matrix");
 		txtA.setBounds(215, 73, 146, 19);
 		frmStateFeedbackController.getContentPane().add(txtA);
 		txtA.setColumns(10);
 		
 		txtB = new JTextField();
+		txtB.setToolTipText("Write the matrix in MATLAB syntax, e.g. [1 2 3; 4 5 6; 6 7 8] for a 3 x 3 matrix");
 		txtB.setBounds(215, 100, 146, 19);
 		frmStateFeedbackController.getContentPane().add(txtB);
 		txtB.setColumns(10);
 		
 		txtC = new JTextField();
+		txtC.setToolTipText("Write the matrix in MATLAB syntax, e.g. [1 2 3; 4 5 6; 6 7 8] for a 3 x 3 matrix");
 		txtC.setBounds(215, 127, 146, 19);
 		frmStateFeedbackController.getContentPane().add(txtC);
 		txtC.setColumns(10);
 		
 		txtD = new JTextField();
+		txtD.setToolTipText("Write the matrix in MATLAB syntax, e.g. [1 2 3; 4 5 6; 6 7 8] for a 3 x 3 matrix");
 		txtD.setBounds(215, 154, 146, 19);
 		frmStateFeedbackController.getContentPane().add(txtD);
 		txtD.setColumns(10);
