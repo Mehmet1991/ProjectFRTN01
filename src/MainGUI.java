@@ -156,9 +156,8 @@ public class MainGUI {
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String oldText = textAreaWarnings.getText();
-				String newText = oldText + "\n\t this is the new text!";
-				textAreaWarnings.setText(newText);				
+				String newText = "\n\tthis is the new text!";
+				textAreaWarnings.append(newText);				
 			}
 		});
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 12));
