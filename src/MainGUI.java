@@ -1,15 +1,14 @@
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.TextArea;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import java.awt.Font;
 import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.Color;
-import java.awt.Window.Type;
-import java.awt.TextArea;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 
 public class MainGUI {
@@ -52,10 +51,10 @@ public class MainGUI {
 	 */
 	private void initialize() {
 		frmStateFeedbackController = new JFrame();
-		frmStateFeedbackController.getContentPane().setBackground(Color.WHITE);
 		frmStateFeedbackController.setResizable(false);
+		frmStateFeedbackController.getContentPane().setBackground(Color.WHITE);
 		frmStateFeedbackController.setTitle("State Feedback Controller with Observer");
-		frmStateFeedbackController.setBounds(100, 100, 806, 456);
+		frmStateFeedbackController.setBounds(100, 100, 823, 462);
 		frmStateFeedbackController.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmStateFeedbackController.getContentPane().setLayout(null);
 		
@@ -109,7 +108,7 @@ public class MainGUI {
 		lblNewLabel_5.setBounds(389, 102, 209, 15);
 		frmStateFeedbackController.getContentPane().add(lblNewLabel_5);
 		
-		JLabel lblNewLabel_6 = new JLabel("Observer pole placement");
+		JLabel lblNewLabel_6 = new JLabel("Observer pole placement:");
 		lblNewLabel_6.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblNewLabel_6.setBounds(389, 129, 209, 15);
 		frmStateFeedbackController.getContentPane().add(lblNewLabel_6);
