@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 import java.awt.Choice;
 import javax.swing.JSlider;
 import javax.swing.JSeparator;
+import java.awt.SystemColor;
+import javax.swing.UIManager;
 
 
 public class MainGUI {
@@ -58,7 +60,7 @@ public class MainGUI {
 	private void initialize() {
 		frmStateFeedbackController = new JFrame();
 		frmStateFeedbackController.setResizable(false);
-		frmStateFeedbackController.getContentPane().setBackground(Color.WHITE);
+		frmStateFeedbackController.getContentPane().setBackground(UIManager.getColor("Button.background"));
 		frmStateFeedbackController.setTitle("State Feedback Controller with Observer");
 		frmStateFeedbackController.setBounds(100, 100, 823, 462);
 		frmStateFeedbackController.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -163,7 +165,7 @@ public class MainGUI {
 		
 		JLabel lblWarnings = new JLabel("Warnings");
 		lblWarnings.setFont(new Font("Dialog", Font.BOLD, 17));
-		lblWarnings.setBounds(33, 207, 156, 41);
+		lblWarnings.setBounds(33, 199, 156, 49);
 		frmStateFeedbackController.getContentPane().add(lblWarnings);
 		
 		JLabel lblParameters = new JLabel("Parameters");
