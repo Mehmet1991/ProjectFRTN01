@@ -179,7 +179,7 @@ public class MainGUI {
 		
 		JLabel lblParameters = new JLabel("Parameters");
 		lblParameters.setFont(new Font("Dialog", Font.BOLD, 17));
-		lblParameters.setBounds(33, 22, 156, 41);
+		lblParameters.setBounds(33, 39, 156, 25);
 		frmStateFeedbackController.getContentPane().add(lblParameters);
 		
 		JMenuBar menuBar = new JMenuBar();
