@@ -7,6 +7,9 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Window.Type;
+import java.awt.TextArea;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 public class MainGUI {
@@ -19,6 +22,7 @@ public class MainGUI {
 	private JTextField txtInterval;
 	private JTextField txtFeedbackPole;
 	private JTextField txtObserverPole;
+	private TextArea textAreaWarnings;
 
 	/**
 	 * Launch the application.
@@ -51,7 +55,7 @@ public class MainGUI {
 		frmStateFeedbackController.getContentPane().setBackground(Color.WHITE);
 		frmStateFeedbackController.setResizable(false);
 		frmStateFeedbackController.setTitle("State Feedback Controller with Observer");
-		frmStateFeedbackController.setBounds(100, 100, 806, 494);
+		frmStateFeedbackController.setBounds(100, 100, 806, 456);
 		frmStateFeedbackController.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmStateFeedbackController.getContentPane().setLayout(null);
 		
@@ -125,7 +129,22 @@ public class MainGUI {
 		txtObserverPole.setBounds(630, 127, 146, 19);
 		frmStateFeedbackController.getContentPane().add(txtObserverPole);
 		
+		textAreaWarnings = new TextArea(null, 0, 0, TextArea.SCROLLBARS_VERTICAL_ONLY);
+		textAreaWarnings.setEditable(false);
+		textAreaWarnings.setBackground(Color.WHITE);
+		textAreaWarnings.setForeground(Color.BLACK);
+		textAreaWarnings.setText(" . . .");
+		textAreaWarnings.setBounds(33, 246, 757, 167);
+		frmStateFeedbackController.getContentPane().add(textAreaWarnings);
+		
 		JButton btnStart = new JButton("Start");
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String oldText = textAreaWarnings.getText();
+				String newText = oldText + "\n\t this is the new text!";
+				textAreaWarnings.setText(newText);				
+			}
+		});
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnStart.setBackground(Color.LIGHT_GRAY);
 		btnStart.setBounds(602, 188, 80, 25);
@@ -146,5 +165,6 @@ public class MainGUI {
 		lblParameters.setFont(new Font("Dialog", Font.BOLD, 17));
 		lblParameters.setBounds(33, 22, 156, 41);
 		frmStateFeedbackController.getContentPane().add(lblParameters);
+
 	}
 }
