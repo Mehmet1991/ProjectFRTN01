@@ -8,15 +8,20 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
-import java.awt.Choice;
-import javax.swing.JSlider;
-import javax.swing.JSeparator;
-import java.awt.SystemColor;
-import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.MatteBorder;
+import java.awt.Component;
 
 
 public class MainGUI {
@@ -176,5 +181,24 @@ public class MainGUI {
 		lblParameters.setFont(new Font("Dialog", Font.BOLD, 17));
 		lblParameters.setBounds(33, 22, 156, 41);
 		frmStateFeedbackController.getContentPane().add(lblParameters);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBorderPainted(false);
+		menuBar.setForeground(UIManager.getColor("Button.background"));
+		menuBar.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		menuBar.setBackground(UIManager.getColor("Button.background"));
+		menuBar.setBounds(0, 0, 817, 25);
+		frmStateFeedbackController.getContentPane().add(menuBar);
+		
+		JMenu mnFile = new JMenu("File");
+		menuBar.add(mnFile);
+		
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqob and Hassan. For more information, please visit our website.", "About us", JOptionPane.PLAIN_MESSAGE);
+			}
+		});
+		mnFile.add(mntmAbout);
 	}
 }
