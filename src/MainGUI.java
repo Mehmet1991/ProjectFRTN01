@@ -21,6 +21,10 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
+
+import matlabcontrol.MatlabConnectionException;
+import matlabcontrol.MatlabInvocationException;
+
 import java.awt.Component;
 
 
@@ -157,7 +161,13 @@ public class MainGUI {
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newText = "\n\tthis is the new text!";
-				textAreaWarnings.append(newText);				
+				textAreaWarnings.append(newText);	
+				try {
+					MatlabCommands mc = new MatlabCommands();
+					mc.performEval();
+				} catch (MatlabInvocationException | MatlabConnectionException e) {
+					textAreaWarnings.append(e.toString());
+				}
 			}
 		});
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 12));
