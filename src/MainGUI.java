@@ -156,9 +156,8 @@ public class MainGUI {
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String oldText = textAreaWarnings.getText();
-				String newText = oldText + "\n\t this is the new text!";
-				textAreaWarnings.setText(newText);				
+				String newText = "\n\tthis is the new text!";
+				textAreaWarnings.append(newText);				
 			}
 		});
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -196,7 +195,7 @@ public class MainGUI {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqob and Hassan\n\n For more information, please contact us. All right reserved", "About us", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqub and Hassan\n\n For more information, please contact us. All right reserved", "About us", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		mnFile.add(mntmAbout);
