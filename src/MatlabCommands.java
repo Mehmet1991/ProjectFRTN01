@@ -19,4 +19,12 @@ public class MatlabCommands {
 	public void performEval() throws MatlabInvocationException, MatlabConnectionException {		
 		proxy.eval("disp('hello world')");
 	}
+	
+	public void tearDown(){
+		try {
+			proxy.exit();
+		} catch (MatlabInvocationException e) {
+			System.err.println("Could not close matlab.");
+		}
+	}
 }

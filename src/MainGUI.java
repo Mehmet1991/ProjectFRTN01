@@ -18,6 +18,8 @@ import javax.swing.border.MatteBorder;
 
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class MainGUI {
@@ -31,6 +33,7 @@ public class MainGUI {
 	private JTextField txtFeedbackPole;
 	private JTextField txtObserverPole;
 	private TextArea textAreaWarnings;
+	private MatlabCommands mc;
 
 	/**
 	 * Launch the application.
@@ -60,6 +63,14 @@ public class MainGUI {
 	 */
 	private void initialize() {
 		frmStateFeedbackController = new JFrame();
+		frmStateFeedbackController.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				if(mc != null){
+					mc.tearDown();
+				}
+			}
+		});
 		frmStateFeedbackController.setResizable(false);
 		frmStateFeedbackController.getContentPane().setBackground(UIManager.getColor("Button.background"));
 		frmStateFeedbackController.setTitle("State Feedback Controller with Observer");
@@ -155,7 +166,7 @@ public class MainGUI {
 				String newText = "\n\tthis is the new text!";
 				textAreaWarnings.append(newText);	
 				try {
-					MatlabCommands mc = new MatlabCommands();
+					mc = new MatlabCommands();
 					mc.performEval();
 				} catch (MatlabInvocationException | MatlabConnectionException e) {
 					textAreaWarnings.append(e.toString());
