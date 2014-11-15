@@ -1,23 +1,32 @@
+import java.io.File;
+
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
 import matlabcontrol.MatlabProxy;
 import matlabcontrol.MatlabProxyFactory;
+import matlabcontrol.MatlabProxyFactoryOptions;
 
 
 public class MatlabCommands {
+	MatlabProxyFactoryOptions options;
 	private MatlabProxyFactory factory;
 	private MatlabProxy proxy;
 	
-	public MatlabCommands() throws MatlabConnectionException {
-		factory = new MatlabProxyFactory();
+	public MatlabCommands() throws MatlabConnectionException, MatlabInvocationException {
+		/*
+		 * Ändra till .setHidden(false) för att se vad som händer
+		 */
+		options = new MatlabProxyFactoryOptions.Builder().setMatlabStartingDirectory(new File("src/")).setHidden(true).build();
+		factory = new MatlabProxyFactory(options);
 		proxy = factory.getProxy();
+		proxy.eval("addpath('" + new File("src").getAbsolutePath() + "')");
 	}
 	
 	/*
 	 * Endast för test, se huruvida det fungerar
 	 */
-	public void performEval() throws MatlabInvocationException, MatlabConnectionException {		
-		proxy.eval("disp('hello world')");
+	public void performEval() throws MatlabInvocationException, MatlabConnectionException {	
+		proxy.eval("SOIDesign");
 	}
 	
 	public void tearDown(){
@@ -26,5 +35,9 @@ public class MatlabCommands {
 		} catch (MatlabInvocationException e) {
 			System.err.println("Could not close matlab.");
 		}
+	}
+
+	public boolean isClosed() {
+		return proxy.isConnected();
 	}
 }

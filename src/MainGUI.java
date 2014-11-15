@@ -18,8 +18,11 @@ import javax.swing.border.MatteBorder;
 
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Button;
+import java.io.IOException;
 
 
 public class MainGUI {
@@ -34,6 +37,7 @@ public class MainGUI {
 	private JTextField txtObserverPole;
 	private TextArea textAreaWarnings;
 	private MatlabCommands mc;
+	private Validation validator;
 
 	/**
 	 * Launch the application.
@@ -55,6 +59,7 @@ public class MainGUI {
 	 * Create the application.
 	 */
 	public MainGUI() {
+		validator = new Validation(this);
 		initialize();
 	}
 
@@ -163,12 +168,10 @@ public class MainGUI {
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String newText = "\n\tthis is the new text!";
-				textAreaWarnings.append(newText);	
 				try {
-					mc = new MatlabCommands();
+					initiateMatlab();
 					mc.performEval();
-				} catch (MatlabInvocationException | MatlabConnectionException e) {
+				} catch (MatlabInvocationException | MatlabConnectionException | IOException e) {
 					textAreaWarnings.append(e.toString());
 				}
 			}
@@ -179,6 +182,10 @@ public class MainGUI {
 		frmStateFeedbackController.getContentPane().add(btnStart);
 		
 		JButton btnStop = new JButton("Stop");
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		btnStop.setBackground(Color.LIGHT_GRAY);
 		btnStop.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnStop.setBounds(696, 188, 80, 25);
@@ -212,5 +219,37 @@ public class MainGUI {
 			}
 		});
 		mnFile.add(mntmAbout);
+		
+		JButton btnNewButton = new JButton("Update parameters");
+		btnNewButton.setBackground(Color.LIGHT_GRAY);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				boolean result = true;
+				result &= validator.validateMatrices(txtA.getText(), txtB.getText(), txtC.getText(), txtD.getText());
+				result &= validator.validateSamplingInterval(txtInterval);
+				result &= validator.validateFeedbackPole(txtFeedbackPole);
+				result &= validator.validateObserverPole(txtObserverPole);
+				if(result){
+					//TODO: Save parameters!
+				}
+			}
+		});
+		btnNewButton.setBounds(455, 190, 137, 23);
+		frmStateFeedbackController.getContentPane().add(btnNewButton);
+	}
+	
+	public void printErrorMessage(String warning){
+		textAreaWarnings.append("\t" + warning + "\n");
+	}
+
+	public void resetErrorMessage() {
+		textAreaWarnings.setText("");
+		
+	}
+	
+	public void initiateMatlab() throws MatlabConnectionException, IOException, MatlabInvocationException{
+		if(mc == null || mc.isClosed()){
+			mc = new MatlabCommands();
+		}
 	}
 }
