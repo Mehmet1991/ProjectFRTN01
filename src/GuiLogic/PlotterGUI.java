@@ -54,7 +54,7 @@ class PlotterPanel extends VirtualProcess{
 		super(stateNbr, inputNbr, outputNbr);
 		this.outputNbr = outputNbr;
 		
-		plotter = new Plotter(inputNbr,100,10,-10);
+		plotter = new Plotter(inputNbr,30,10,-10);
 		for(int i = 0; i < inputNbr; i++){
 			getSink(i).setPlotter(plotter,i);
 		}
