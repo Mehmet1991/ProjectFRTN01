@@ -161,7 +161,7 @@ public class MainGUI {
 		textAreaWarnings = new TextArea(null, 0, 0, TextArea.SCROLLBARS_VERTICAL_ONLY);
 		textAreaWarnings.setEditable(false);
 		textAreaWarnings.setBackground(Color.WHITE);
-		textAreaWarnings.setForeground(Color.BLACK);
+		textAreaWarnings.setForeground(Color.RED);
 		textAreaWarnings.setText(" . . .");
 		textAreaWarnings.setBounds(33, 246, 757, 167);
 		frmStateFeedbackController.getContentPane().add(textAreaWarnings);
