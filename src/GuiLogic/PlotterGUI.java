@@ -23,8 +23,8 @@ public class PlotterGUI {
     	Panel panel1 = new Panel();
     	Panel panel2 = new Panel();
 
-    	panel1.add(new JLabel("Controller:"), BorderLayout.NORTH);
-    	panel2.add(new JLabel("States:"), BorderLayout.CENTER);
+    	panel1.add(new JLabel("Process singals:"), BorderLayout.NORTH);
+    	panel2.add(new JLabel("Feedback states:"), BorderLayout.CENTER);
     	panel1.add(plotterPanel1.getPanel(), BorderLayout.NORTH);
     	panel2.add(plotterPanel2.getPanel(), BorderLayout.CENTER);
 		
