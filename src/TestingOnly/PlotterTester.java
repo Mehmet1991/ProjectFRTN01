@@ -6,7 +6,8 @@ import SimEnvironment.AnalogSink;
 
 public class PlotterTester {
 	public static void main(String[] args){
-		PlotterGUI gui = new PlotterGUI(4);
+		PlotterGUI gui = new PlotterGUI(3, 4);
+		
 		AnalogSink U = gui.getSinkPlotter1(0);
 		AnalogSink Y = gui.getSinkPlotter1(1);
 		AnalogSink Yref = gui.getSinkPlotter1(2);

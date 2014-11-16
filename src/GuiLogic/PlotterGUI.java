@@ -16,8 +16,8 @@ import SimEnvironment.VirtualProcess;
 public class PlotterGUI {
 	PlotterPanel plotterPanel1, plotterPanel2;
 	
-    public PlotterGUI(int nbrStates) {
-    	plotterPanel1 = new PlotterPanel(0, 3, 0);
+    public PlotterGUI(int nbrSignals, int nbrStates) {
+    	plotterPanel1 = new PlotterPanel(0, nbrSignals, 0);
     	plotterPanel2 = new PlotterPanel(0, nbrStates, 0);
 
     	Panel panel1 = new Panel();
