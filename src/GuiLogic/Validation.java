@@ -6,9 +6,14 @@ import javax.swing.JTextField;
 public class Validation {
 	private MainGUI gui;
 	private String matriceRegex = "\\[\\s*((\\d+(\\.*?\\d*?) *)*\\d+\\s*;(\\p{Blank})*)*(\\d+(\\.*?\\d*?) *)*\\d+\\s*]";
+	private String samplingIntervalRegex = "\\d+";
+	private String poleRegex = "(-?\\d+(\\.\\d+)?\\p{Blank}*\\,\\p{Blank}*)*(-?\\d+)(\\.\\d+)?";
 	
-	
+
 	private String matriceWarning = "Wrong format for matrice ";
+	private String samplingIntervalWarning = "Wrong sampling interval format";
+	private String feedbackPoleWarning = "Wrong feedback pole placement";
+	private String observerPoleWarning = "Wrong observer pole placement";
 	
 	public Validation(MainGUI gui){
 		this.gui = gui;
@@ -46,7 +51,7 @@ public class Validation {
 			int arrayLength = matriceSplit[0].split("\\s+").length;
 			for(int i = 1; i < matriceSplit.length; i++){
 				if(arrayLength != matriceSplit[i].split("\\s+").length){
-					gui.printErrorMessage(matriceWarning + matriceName + "2: [" + matrice + "]");
+					gui.printErrorMessage(matriceWarning + matriceName + ": [" + matrice + "]");
 					return false;
 				}
 			}
@@ -59,19 +64,31 @@ public class Validation {
 	  }
 	}
 
-	public boolean validateSamplingInterval(JTextField txtInterval) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean validateSamplingInterval(String samplingInterval) {
+		return validateRegex(samplingInterval, samplingIntervalRegex, samplingIntervalWarning);
 	}
 
-	public boolean validateFeedbackPole(JTextField txtFeedbackPole) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean validateFeedbackPole(String feedbackPole) {
+		return validateRegex(feedbackPole, poleRegex, feedbackPoleWarning);
 	}
 
-	public boolean validateObserverPole(JTextField txtObserverPole) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean validateObserverPole(String observerPoles) {
+		return validateRegex(observerPoles, poleRegex, observerPoleWarning);
+	}
+	
+	public boolean validateRegex(String text, String regex, String warningText){
+		if (!text.isEmpty()) {
+			text = text.trim();
+
+			if(!Pattern.matches(regex, text)){
+				gui.printErrorMessage(warningText + ": " + text);
+				return false;
+			}
+			return true;
+		} else {
+			gui.printErrorMessage(warningText +  " Please fill in!");
+			return false;
+		}
 	}
 	
 

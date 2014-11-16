@@ -227,9 +227,9 @@ public class MainGUI {
 			public void actionPerformed(ActionEvent arg0) {
 				boolean result = true;
 				result &= validator.validateMatrices(txtA.getText(), txtB.getText(), txtC.getText(), txtD.getText());
-				result &= validator.validateSamplingInterval(txtInterval);
-				result &= validator.validateFeedbackPole(txtFeedbackPole);
-				result &= validator.validateObserverPole(txtObserverPole);
+				result &= validator.validateSamplingInterval(txtInterval.getText());
+				result &= validator.validateFeedbackPole(txtFeedbackPole.getText());
+				result &= validator.validateObserverPole(txtObserverPole.getText());
 				if(result){
 					//TODO: Save parameters!
 				}
