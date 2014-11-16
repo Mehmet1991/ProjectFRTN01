@@ -1,11 +1,10 @@
 package GuiLogic;
 import java.util.regex.Pattern;
-import javax.swing.JTextField;
 
 
 public class Validation {
 	private MainGUI gui;
-	private String matriceRegex = "\\[\\s*((\\d+(\\.*?\\d*?) *)*\\d+\\s*;(\\p{Blank})*)*(\\d+(\\.*?\\d*?) *)*\\d+\\s*]";
+	private String matriceRegex = "\\[\\s*(((-?\\d+)(\\.*?\\d*?) *)*(-?\\d+)\\s*;(\\p{Blank})*)*((-?\\d+)(\\.*?\\d*?) *)*(-?\\d+)\\s*]";
 	private String samplingIntervalRegex = "\\d+";
 	private String poleRegex = "(-?\\d+(\\.\\d+)?\\p{Blank}*\\,\\p{Blank}*)*(-?\\d+)(\\.\\d+)?";
 	
