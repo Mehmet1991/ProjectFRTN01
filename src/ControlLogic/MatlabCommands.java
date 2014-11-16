@@ -1,3 +1,4 @@
+package ControlLogic;
 import java.io.File;
 
 import matlabcontrol.MatlabConnectionException;
@@ -14,7 +15,7 @@ public class MatlabCommands {
 	
 	public MatlabCommands() throws MatlabConnectionException, MatlabInvocationException {
 		/*
-		 * Ändra till .setHidden(false) för att se vad som händer
+		 * Ändra till .setHidden(false) för att kunna se exakt vad som händer i matlab
 		 */
 		options = new MatlabProxyFactoryOptions.Builder().setMatlabStartingDirectory(new File("src/")).setHidden(true).build();
 		factory = new MatlabProxyFactory(options);

@@ -1,3 +1,7 @@
+package GuiLogic;
+
+
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -16,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
+import ControlLogic.MatlabCommands;
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
 
