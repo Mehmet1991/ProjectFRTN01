@@ -9,9 +9,9 @@ import matlabcontrol.MatlabProxyFactoryOptions;
 
 
 public class MatlabCommands {
-	MatlabProxyFactoryOptions options;
+	private MatlabProxyFactoryOptions options;
 	private MatlabProxyFactory factory;
-	private MatlabProxy proxy;
+	public MatlabProxy proxy;
 	
 	public MatlabCommands() throws MatlabConnectionException, MatlabInvocationException {
 		/*
@@ -28,6 +28,7 @@ public class MatlabCommands {
 	 */
 	public void performEval() throws MatlabInvocationException, MatlabConnectionException {	
 		proxy.eval("SOIDesign");
+		proxy.eval("A");
 	}
 	
 	public void tearDown(){

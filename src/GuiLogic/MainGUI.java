@@ -252,7 +252,7 @@ public class MainGUI {
 	}
 	
 	public void initiateMatlab() throws MatlabConnectionException, IOException, MatlabInvocationException{
-		if(mc == null || mc.isClosed()){
+		if(mc == null || mc.proxy.isRunningInsideMatlab()){
 			mc = new MatlabCommands();
 		}
 	}
