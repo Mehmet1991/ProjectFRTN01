@@ -1,83 +1,84 @@
 package GuiLogic;
 
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.GridLayout;
+import java.awt.Panel;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JLabel;
 
+import SimEnvironment.AnalogSink;
 import SimEnvironment.Plotter;
 import SimEnvironment.VirtualProcess;
 
-public class PlotterGUI extends VirtualProcess {
-    
-    private static final int stateNbr=1;  //number of states
-    private static final int inputNbr=3;  //number of inputs
-    private static final int outputNbr=3; //number of outputs
-
-    private double kPhi=4.4; //process coefficient for angle
-
-
-    /**
-     * Creates an instance of the virtual process Beam
-     */
-    public PlotterGUI() {
-		super(stateNbr, inputNbr, outputNbr);
-		Plotter plotter = new Plotter(3,100,10,-10);
-		getSource(0).setPlotter(plotter,0);
-		getSink(0).setPlotter(plotter,1);
-		getSink(1).setPlotter(plotter,2);
-		JFrame frame = new JFrame("Plotter");
-		frame.getContentPane().add(plotter.getPanel());
-	        frame.pack();
-	        frame.setVisible(true);
-    }
-    
-    /**
-     * Calculates new output signals for the virtual process Beam
-     *
-     * @param state process state
-     * @param input process input
-     * @return new outputs for the process
-     */
-    public double[] computeOutput(double[] state, double[] input) {
-		double[] output = new double[outputNbr];
-		output[0] = getSource(0).get();//update beam angle
-		return output;
-    }
-
-    /**
-     * Calculates new states for the virtual process Beam
-     *
-     * @param state process state
-     * @param input process inputs
-     * @param h time difference
-     * @return new process state
-     */
-    public double[] updateState(double[] state, double[] input, double h) {
-		double ulim;
-		double[] newState = new double[stateNbr];
+public class PlotterGUI {
+	PlotterPanel plotterPanel1, plotterPanel2;
 	
-		//Euler forward approximation
-		ulim = limit(input[0],-10,10);
-		newState[0] = state[0] + kPhi*h*ulim;   //update beam angle
-		return newState;
+    public PlotterGUI(int nbrStates) {
+    	plotterPanel1 = new PlotterPanel(0, 3, 0);
+    	plotterPanel2 = new PlotterPanel(0, nbrStates, 0);
+
+    	Panel panel1 = new Panel();
+    	Panel panel2 = new Panel();
+
+    	panel1.add(new JLabel("Controller:"), BorderLayout.NORTH);
+    	panel2.add(new JLabel("States:"), BorderLayout.CENTER);
+    	panel1.add(plotterPanel1.getPanel(), BorderLayout.NORTH);
+    	panel2.add(plotterPanel2.getPanel(), BorderLayout.CENTER);
+		
+		JFrame frame = new JFrame("Plotter");
+		Container contentPane = frame.getContentPane();
+		GridLayout layout = new GridLayout(2,1);
+        contentPane.setLayout(layout);
+        contentPane.add(panel1);
+        contentPane.add(panel2);
+        frame.pack();
+        frame.setVisible(true);
     }
 
-    private double limit(double v, double min, double max) {
-		if (v < min) {
-		    v = min;
-		} else {
-		    if (v > max) {
-			v = max;
-		    }
+	public AnalogSink getSinkPlotter1(int i) {
+		return plotterPanel1.getSink(i);
+	}
+
+	public AnalogSink getSinkPlotter2(int i) {
+		return plotterPanel2.getSink(i);
+	}
+}
+
+class PlotterPanel extends VirtualProcess{
+	private int outputNbr;
+	private Plotter plotter;
+	public PlotterPanel(int stateNbr, int inputNbr, int outputNbr) {
+		super(stateNbr, inputNbr, outputNbr);
+		this.outputNbr = outputNbr;
+		
+		plotter = new Plotter(inputNbr,100,10,-10);
+		for(int i = 0; i < inputNbr; i++){
+			getSink(i).setPlotter(plotter,i);
 		}
-		return v;
-    }
+	}
 
+	public Component getPanel() {
+		return plotter.getPanel();
+	}
 
+	@Override
+	public double[] computeOutput(double[] state, double[] input) {
+		double[] output = new double[outputNbr];
+		for(int i = 0; i < outputNbr; i++){
+			output[i] = getSink(i).get();
+		}
+		return output;
+	}
 
-} // Beam
+	@Override
+	public double[] updateState(double[] state, double[] input, double h) {
+		return state;
+	}
+	
+}
 
 
 
