@@ -39,6 +39,7 @@ public class MainGUI {
 	private TextArea textAreaWarnings;
 	private MatlabCommands mc;
 	private Validation validator;
+	private JButton btnStart;
 
 	/**
 	 * Launch the application.
@@ -166,10 +167,11 @@ public class MainGUI {
 		textAreaWarnings.setBounds(33, 246, 757, 167);
 		frmStateFeedbackController.getContentPane().add(textAreaWarnings);
 		
-		JButton btnStart = new JButton("Start");
+		btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					btnStart.setEnabled(false);
 					initiateMatlab();
 					mc.performEval();
 				} catch (MatlabInvocationException | MatlabConnectionException | IOException e) {
@@ -185,6 +187,7 @@ public class MainGUI {
 		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				btnStart.setEnabled(true);
 			}
 		});
 		btnStop.setBackground(Color.LIGHT_GRAY);
