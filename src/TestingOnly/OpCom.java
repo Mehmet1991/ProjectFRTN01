@@ -8,6 +8,8 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
+import ControlLogic.ReferenceGenerator;
+import SimEnvironment.AnalogSink;
 import se.lth.control.BoxPanel;
 import se.lth.control.DoublePoint;
 import se.lth.control.plot.PlotterPanel;
@@ -30,7 +32,7 @@ class Reader extends Thread {
     private OpCom opcom;
     private boolean doIt = true;
 
-	 AnalogIn velChan, posChan, ctrlChan;
+	 AnalogSink velChan, posChan, ctrlChan;
 
     /** Constructor. Sets initial values of the controller parameters and initial mode. */
     public Reader(OpCom opcom) {
@@ -48,9 +50,9 @@ class Reader extends Thread {
 		  double realTime = 0;
 
 		  try {
-				velChan = new AnalogIn(0);
-				posChan = new AnalogIn(1);
-				ctrlChan = new AnalogIn(2);
+				velChan = new AnalogSink(0);
+				posChan = new AnalogSink(1);
+				ctrlChan = new AnalogSink(2);
 		  } catch (Exception e) {
 				System.out.println(e);
 		  } 
@@ -206,7 +208,14 @@ public class OpCom {
 		  OpCom opcom = new OpCom();
 		  opcom.initializeGUI();
 		  Reader reader = new Reader(opcom);
-//		  opcom.start();
-//		  reader.start();
+		  opcom.start();
+		  reader.start();
+		  ReferenceGenerator refgen = new ReferenceGenerator(10, 1);
+		  refgen.start();
+		  while(true){
+			  reader.velChan.set(refgen.getRef()*2);
+			  reader.posChan.set(refgen.getRef()*6);
+			  reader.ctrlChan.set(refgen.getRef()*7);
+		  }
 	 }
 }
