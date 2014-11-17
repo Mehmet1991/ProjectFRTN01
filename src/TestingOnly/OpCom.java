@@ -34,9 +34,7 @@ class Reader extends Thread {
 
     /** Constructor. Sets initial values of the controller parameters and initial mode. */
     public Reader(OpCom opcom) {
-
 		  this.opcom = opcom;
-
     }
 
     /** Run method. Sends data periodically to Opcom. */
