@@ -147,7 +147,7 @@ public class OpCom {
 			UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
 		} catch (Exception e) { }
 		  frame = new JFrame("Plotter");
-		  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 	
 		  // Create a panel for the two plotters.
 		  plotterPanel = new BoxPanel(BoxPanel.VERTICAL);
@@ -165,13 +165,14 @@ public class OpCom {
 		  frame.add(plotterPanel);
 	
 		  // WindowListener that exits the system if the main window is closed.
-//		  frame.addWindowListener(new WindowAdapter() {
-//					 public void windowClosing(WindowEvent e) {
-//						  //reader.shutDown();
+		  frame.addWindowListener(new WindowAdapter() {
+					 public void windowClosing(WindowEvent e) {
+						  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						  //reader.shutDown();
 //						  stopThread();
 //						  System.exit(0);
-//					 }
-//				});
+					 }
+				});
 
 		  // Set guiPanel to be content pane of the frame.
 		  frame.getContentPane().add(plotterPanel, BorderLayout.CENTER);
