@@ -125,19 +125,4 @@ public class OpCom {
 			  reader.ctrlChan.set(refgen.getRef()*7);
 		  }
     }
-
-	 public static void main(String[] argv) {
-		  OpCom opcom = new OpCom();
-		  opcom.initializeGUI();
-		  Reader reader = new Reader(opcom);
-		  opcom.start();
-		  reader.start();
-		  ReferenceGenerator refgen = new ReferenceGenerator(10, 1);
-		  refgen.start();
-		  while(true){
-			  reader.velChan.set(refgen.getRef()*2);
-			  reader.posChan.set(refgen.getRef()*6);
-			  reader.ctrlChan.set(refgen.getRef()*7);
-		  }
-	 }
 }
