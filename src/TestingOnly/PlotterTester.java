@@ -1,11 +1,17 @@
 package TestingOnly;
 
+import javax.swing.UIManager;
+
 import ControlLogic.ReferenceGenerator;
 import GuiLogic.PlotterGUI;
 import SimEnvironment.AnalogSink;
 
 public class PlotterTester {
-	public static void main(String[] args){
+	public static void main(String[] args){		
+		try {
+			UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
+//			UIManager.setLookAndFeel ( "com.alee.laf.WebLookAndFeel" );
+		} catch (Exception e) { }
 		PlotterGUI gui = new PlotterGUI(3, 4);
 		
 		AnalogSink U = gui.getSinkPlotter1(0);

@@ -19,8 +19,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.MatteBorder;
 
+import com.alee.laf.WebLookAndFeel;
+
+import TestingOnly.PlotterTester;
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
 import ControlLogic.MatlabCommands;
@@ -45,6 +49,10 @@ public class MainGUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
+//			UIManager.setLookAndFeel ( "com.alee.laf.WebLookAndFeel" );
+		} catch (Exception e) { }
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
