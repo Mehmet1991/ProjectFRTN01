@@ -1,4 +1,4 @@
-package TestingOnly;
+package GuiLogic;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -8,98 +8,14 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
+import ControlLogic.PlotData;
+import ControlLogic.Reader;
 import ControlLogic.ReferenceGenerator;
 import SimEnvironment.AnalogSink;
 import se.lth.control.BoxPanel;
 import se.lth.control.DoublePoint;
 import se.lth.control.plot.PlotterPanel;
 import se.lth.control.realtime.AnalogIn;
-
-
-class PlotData implements Cloneable { 
-    double ref, y; 
-    double x; // holds the current time 
-    
-    public Object clone() { 
-        try { 
-	    return super.clone(); 
-        } catch (Exception e) {return null;} 
-    } 
-} 
-
-
-class Reader extends Thread {
-    private OpCom opcom;
-    private boolean doIt = true;
-
-	 AnalogSink velChan, posChan, ctrlChan;
-
-    /** Constructor. Sets initial values of the controller parameters and initial mode. */
-    public Reader(OpCom opcom) {
-		  this.opcom = opcom;
-    }
-
-    /** Run method. Sends data periodically to Opcom. */
-    public void run() {
-		  final long h = 25; // period (ms)
-		  long duration;
-		  long t = System.currentTimeMillis();
-		  DoublePoint dp;
-		  PlotData pd;
-		  double vel = 0, pos = 0, ctrl = 0;
-		  double realTime = 0;
-
-		  try {
-				velChan = new AnalogSink(0);
-				posChan = new AnalogSink(1);
-				ctrlChan = new AnalogSink(2);
-		  } catch (Exception e) {
-				System.out.println(e);
-		  } 
-
-		  setPriority(7);
-
-		  while (doIt) {
-				try {
-					 vel = velChan.get();
-					 pos = posChan.get();
-					 ctrl = ctrlChan.get();
-				} catch (Exception e) {
-					 System.out.println(e);
-				} 
-
-				pd = new PlotData();
-				pd.y = vel;
-				pd.ref = pos;
-				pd.x = realTime;
-				opcom.putMeasurementDataPoint(pd);
-	    
-				dp = new DoublePoint(realTime,ctrl);
-				opcom.putControlDataPoint(dp);
-
-				realTime += ((double) h)/1000.0;
-
-				t += h;
-				duration = (int) (t - System.currentTimeMillis());
-				if (duration > 0) {
-					 try {
-						  sleep(duration);
-					 } catch (Exception e) {}
-				}
-		  }
-    }
-
-    /** Stops the thread. */
-    private void stopThread() {
-		  doIt = false;
-    }
-
-    /** Called by Opcom when the Stop button is pressed. */
-    public synchronized void shutDown() {
-		  stopThread();
-    } 
-
-}
 
 
 /** Class that creates and maintains a GUI for the Ball and Beam process. 
@@ -167,10 +83,8 @@ public class OpCom {
 		  // WindowListener that exits the system if the main window is closed.
 		  frame.addWindowListener(new WindowAdapter() {
 					 public void windowClosing(WindowEvent e) {
-						  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-						  //reader.shutDown();
-//						  stopThread();
-//						  System.exit(0);
+						  stopThread();
+						  System.exit(0);
 					 }
 				});
 
@@ -198,11 +112,19 @@ public class OpCom {
     
     /** Called by Reader to put a measurement data point in the buffer. */
     public synchronized void putMeasurementDataPoint(PlotData pd) {
-		  double x = pd.x;
-		  double ref = pd.ref;
-		  double y = pd.y;
+		  double x = pd.getX();
+		  double ref = pd.getRef();
+		  double y = pd.getY();
 		  measurementPlotter.putData(x, ref, y);
-    }    
+    }   
+    
+    public void showStatistics(Reader reader, ReferenceGenerator refgen) {
+		  while(true){
+			  reader.velChan.set(refgen.getRef()*2);
+			  reader.posChan.set(refgen.getRef()*6);
+			  reader.ctrlChan.set(refgen.getRef()*7);
+		  }
+    }
 
 	 public static void main(String[] argv) {
 		  OpCom opcom = new OpCom();
