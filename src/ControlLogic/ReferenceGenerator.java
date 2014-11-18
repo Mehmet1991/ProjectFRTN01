@@ -86,7 +86,7 @@ public class ReferenceGenerator extends Thread {
 			frame.setVisible(true);
 			frame.getContentPane().add(paramsPanel);
 			frame.setSize(200, 100);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame.setResizable(false);
 			frame.setLocationRelativeTo(null);
 		}
