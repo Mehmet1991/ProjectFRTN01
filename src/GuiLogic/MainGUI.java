@@ -24,6 +24,9 @@ import javax.swing.border.MatteBorder;
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
 import ControlLogic.MatlabCommands;
+import ControlLogic.ReferenceGenerator;
+import ControlLogic.Regulator;
+import ControlLogic.StateFeedback;
 
 
 public class MainGUI {
@@ -42,6 +45,8 @@ public class MainGUI {
 	private JButton btnStart;
 	private JTextField txtVMin;
 	private JTextField txtVMax;
+	private double vMin, vMax = 0;
+	private boolean savedParams = true;
 
 	/**
 	 * Launch the application.
@@ -177,11 +182,21 @@ public class MainGUI {
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					btnStart.setEnabled(false);
-					initiateMatlab();
-					mc.performEval();
+					if(savedParams){
+						btnStart.setEnabled(false);
+						initiateMatlab();
+						mc.performEval();
+						OpCom opCom = new OpCom();
+						Reader reader = new Reader(opCom);
+						opCom.initializeGUI();
+						opCom.start();
+						reader.start();
+						ReferenceGenerator refgen = new ReferenceGenerator(10, 1);
+						refgen.start();
+						new Regulator(reader, validator, new StateFeedback(mc), refgen, vMin, vMax).start();
+					}
 				} catch (MatlabInvocationException | MatlabConnectionException | IOException e) {
-					textAreaWarnings.append(e.toString());
+					printErrorMessage(e.getLocalizedMessage());
 				}
 			}
 		});
@@ -249,6 +264,7 @@ public class MainGUI {
 				if(result){
 					try {
 						mc.setParams(A,B,C,D, h, fPole, oPole);
+						savedParams = true;
 					} catch (MatlabInvocationException e) {
 						printErrorMessage(e.getMessage());
 					}

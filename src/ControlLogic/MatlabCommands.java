@@ -22,13 +22,9 @@ public class MatlabCommands {
 		proxy = factory.getProxy();
 		proxy.eval("addpath('" + new File("src").getAbsolutePath() + "')");
 	}
-	
-	/*
-	 * Endast f�r test, se huruvida det fungerar
-	 */
+
 	public void performEval() throws MatlabInvocationException, MatlabConnectionException {	
 		proxy.eval("SOIDesign");
-		proxy.eval("A");
 	}
 	
 	public void eval(String command) throws MatlabInvocationException{
@@ -36,7 +32,7 @@ public class MatlabCommands {
 	}
 	
 	public double getVariable(String command) throws MatlabInvocationException{
-		return ((double[])proxy.getVariable("command"))[0];
+		return ((double[])proxy.getVariable(command))[0];
 	}
 	
 	public void tearDown(){

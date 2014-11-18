@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 public class Validation {
 	private MainGUI gui;
 	private String matriceRegex = "\\[\\s*(((-?\\d+)(\\.*?\\d*?) *)*(-?\\d+)\\s*;(\\p{Blank})*)*((-?\\d+)(\\.*?\\d*?) *)*(-?\\d+)\\s*]";
-	private String samplingIntervalRegex = "\\d+";
-	private String poleRegex = "(-?\\d+(\\.\\d+)?\\p{Blank}*\\,\\p{Blank}*)*(-?\\d+)(\\.\\d+)?";
+	private String samplingIntervalRegex = "\\d+(\\.\\d+)?";
+	private String poleRegex = "(-?\\d+(\\.\\d+)?\\p{Blank}+)*(-?\\d+)(\\.\\d+)?";
 	
 
 	private String matriceWarning = "Wrong format for matrice ";

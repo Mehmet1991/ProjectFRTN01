@@ -88,6 +88,7 @@ public class ReferenceGenerator extends Thread {
 			frame.setSize(200, 100);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setResizable(false);
+			frame.setLocationRelativeTo(null);
 		}
 	}
 	
