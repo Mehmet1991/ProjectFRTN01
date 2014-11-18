@@ -233,12 +233,23 @@ public class MainGUI {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				boolean result = true;
-				result &= validator.validateMatrices(txtA.getText(), txtB.getText(), txtC.getText(), txtD.getText());
-				result &= validator.validateSamplingInterval(txtInterval.getText());
-				result &= validator.validateFeedbackPole(txtFeedbackPole.getText());
-				result &= validator.validateObserverPole(txtObserverPole.getText());
+				String A = txtA.getText().trim();
+				String B = txtB.getText().trim();
+				String C = txtC.getText().trim();
+				String D = txtD.getText().trim();
+				String h = txtInterval.getText().trim();
+				String fPole = txtFeedbackPole.getText().trim();
+				String oPole = txtObserverPole.getText().trim();
+				result &= validator.validateMatrices(A, B, C, D);
+				result &= validator.validateSamplingInterval(h);
+				result &= validator.validateFeedbackPole(fPole);
+				result &= validator.validateObserverPole(oPole);
 				if(result){
-					//TODO: Save parameters!
+					try {
+						mc.setParams(A,B,C,D, h, fPole, oPole);
+					} catch (MatlabInvocationException e) {
+						printErrorMessage(e.getMessage());
+					}
 				}
 			}
 		});

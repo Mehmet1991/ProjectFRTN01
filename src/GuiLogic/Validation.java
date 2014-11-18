@@ -89,5 +89,10 @@ public class Validation {
 			return false;
 		}
 	}
+
+	public void setError(String message) {
+		gui.printErrorMessage(message);
+		
+	}
 }
 

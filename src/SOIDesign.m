@@ -13,6 +13,11 @@ zetac = 0.866;
 omegad = 1;
 zetad = 0.866;
 
+xhat = zeros(size(A,1),1);
+xi = 0;
+y = 0;
+uc = 0;
+
 omegae = 1;
 
 Gp = ss(A,B,C,D); %transfer function of the process
@@ -28,8 +33,9 @@ Bnew = [Gam; 0];
 Cnew = [C 0];
 
 %state feedback and integral action design
-pc = conv([1 2*omegaa*zetaa omegaa^2],[1 2*omegab*zetab omegab^2]); %control poles in continuous time
-pc = conv(pc, [1 omegae]);
+%pc = conv([1 2*omegaa*zetaa omegaa^2],[1 2*omegab*zetab omegab^2]); %control poles in continuous time
+pc = [1 2*omegaa*zetaa omegaa^2 omegae omegae omegae];
+%pc = conv(pc, [1 omegae]);
 pc = roots(pc);
 pcd = exp(pc*h); %in discrete time
 Le = place(Anew, Bnew, pcd);

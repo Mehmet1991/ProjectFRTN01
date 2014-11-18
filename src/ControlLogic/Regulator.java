@@ -1,23 +1,24 @@
 package ControlLogic;
+import matlabcontrol.MatlabInvocationException;
+import GuiLogic.*;
 import se.lth.control.realtime.AnalogIn;
 import se.lth.control.realtime.AnalogOut;
 import se.lth.control.realtime.IOChannelException;
 
 
 public class Regulator extends Thread{
+	private Validation validation;
 	private StateFeedback stateFeedback;
-	private Monitor monitor;
 	private ReferenceGenerator refgen;
 	private AnalogIn yChan;
     private AnalogOut uChan;
 	
-	public Regulator(StateFeedback stateFeedback, Monitor monitor, ReferenceGenerator refgen) throws IOChannelException{
+	public Regulator(Validation validation, StateFeedback stateFeedback, ReferenceGenerator refgen) throws IOChannelException{
+		this.validation = validation;
 		this.stateFeedback = stateFeedback;
-		this.monitor = monitor;
 		this.refgen = refgen;
 		yChan = new AnalogIn(1);
 		uChan = new AnalogOut(1);
-		
 	}
 	
 	@Override
@@ -28,6 +29,8 @@ public class Regulator extends Thread{
 				u = stateFeedback.calculateOutput(yChan.get(), refgen.getRef());
 			} catch (IOChannelException e) {
 				System.err.println("Could not read y.");
+			} catch (MatlabInvocationException e) {
+				validation.setError(e.getMessage());
 			}
 			u = limit(u);
 			try {
@@ -35,12 +38,15 @@ public class Regulator extends Thread{
 			} catch (Exception e) {
 				System.err.println("Could not set u.");
 			}
-			stateFeedback.updateState(u);
+			try {
+				stateFeedback.updateState(u);
+			} catch (MatlabInvocationException e) {
+				validation.setError(e.getMessage());
+			}
 		}
 	}
 
 	private double limit(double u) {
-		// TODO Auto-generated method stub, måste kolla upp gränser för u
 		return 0;
 	}
 }
