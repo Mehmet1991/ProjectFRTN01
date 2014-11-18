@@ -1,8 +1,8 @@
 package TestingOnly;
 
-import ControlLogic.Reader;
 import ControlLogic.ReferenceGenerator;
 import GuiLogic.OpCom;
+import GuiLogic.Reader;
 
 public class OpComTester {    
 

@@ -8,14 +8,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
-import ControlLogic.PlotData;
-import ControlLogic.Reader;
-import ControlLogic.ReferenceGenerator;
-import SimEnvironment.AnalogSink;
 import se.lth.control.BoxPanel;
-import se.lth.control.DoublePoint;
 import se.lth.control.plot.PlotterPanel;
-import se.lth.control.realtime.AnalogIn;
+import ControlLogic.ReferenceGenerator;
 
 
 /** Class that creates and maintains a GUI for the Ball and Beam process. 
@@ -36,12 +31,11 @@ public class OpCom {
     private int divTicks = 5;    // Number of ticks on time axis
     private int divGrid = 5;     // Number of grids on time axis
 
-    private boolean hChanged = false; 
        
     /** Constructor. Creates the plotter panels. */
     public OpCom() {
-		  measurementPlotter = new PlotterPanel(2, 4); // Two channels
-		  controlPlotter = new PlotterPanel(1, 4);
+		  measurementPlotter = new PlotterPanel(3, 4); // Two channels
+		  controlPlotter = new PlotterPanel(4, 4);
     }
 
     /** Starts the threads. */
@@ -104,25 +98,32 @@ public class OpCom {
     }
 
     /** Called by Reader to put a control signal data point in the buffer. */
-    public synchronized void putControlDataPoint(DoublePoint dp) {
-		  double x = dp.x;
-		  double y = dp.y;
-		  controlPlotter.putData(x, y);
+    public synchronized void putControlDataPoint(PlotData pd) {
+		  double time = pd.x;
+		  double s1 = pd.states[0];
+		  double s2 = pd.states[1];
+		  double s3 = pd.states[2];
+		  double s4 = pd.states[3];
+		  controlPlotter.putData(time, s1, s2, s3, s4);
     }
     
     /** Called by Reader to put a measurement data point in the buffer. */
     public synchronized void putMeasurementDataPoint(PlotData pd) {
-		  double x = pd.getX();
-		  double ref = pd.getRef();
-		  double y = pd.getY();
-		  measurementPlotter.putData(x, ref, y);
+		  double time = pd.x;
+		  double ref = pd.ref;
+		  double y = pd.y;
+		  double u = pd.u;
+		  measurementPlotter.putData(time, ref, y, u);
     }   
     
     public void showStatistics(Reader reader, ReferenceGenerator refgen) {
 		  while(true){
-			  reader.velChan.set(refgen.getRef()*2);
-			  reader.posChan.set(refgen.getRef()*6);
-			  reader.ctrlChan.set(refgen.getRef()*7);
+			  reader.yChan.set(refgen.getRef()*2);
+			  reader.refChan.set(refgen.getRef()*6);
+			  reader.uChan.set(refgen.getRef()*7);
+			  for(int i = 0; i < 4; i++){
+				  reader.sChan[i].set(refgen.getRef()*(i+4));
+			  }
 		  }
     }
 }

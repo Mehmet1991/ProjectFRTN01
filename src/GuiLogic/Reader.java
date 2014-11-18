@@ -1,15 +1,14 @@
-package ControlLogic;
-import se.lth.control.DoublePoint;
-import GuiLogic.OpCom;
+package GuiLogic;
 import SimEnvironment.AnalogSink;
 
 public class Reader extends Thread {
     private OpCom opcom;
     private boolean doIt = true;
 
-	 public AnalogSink velChan;
-	 public AnalogSink posChan;
-	 public AnalogSink ctrlChan;
+	 public AnalogSink yChan;
+	 public AnalogSink refChan;
+	 public AnalogSink uChan;
+	 public AnalogSink sChan[] = new AnalogSink[4];
 
     /** Constructor. Sets initial values of the controller parameters and initial mode. */
     public Reader(OpCom opcom) {
@@ -21,15 +20,19 @@ public class Reader extends Thread {
 		  final long h = 25; // period (ms)
 		  long duration;
 		  long t = System.currentTimeMillis();
-		  DoublePoint dp;
 		  PlotData pd;
-		  double vel = 0, pos = 0, ctrl = 0;
+		  double yValue = 0, refValue = 0, uValue = 0;
+		  double[] states = new double[sChan.length];
 		  double realTime = 0;
 
 		  try {
-				velChan = new AnalogSink(0);
-				posChan = new AnalogSink(1);
-				ctrlChan = new AnalogSink(2);
+				yChan = new AnalogSink(0);
+				refChan = new AnalogSink(1);
+				uChan = new AnalogSink(2);
+				for(int i = 0; i < sChan.length; i++){
+					sChan[i] = new AnalogSink(3+i);
+					
+				}
 		  } catch (Exception e) {
 				System.out.println(e);
 		  } 
@@ -38,21 +41,24 @@ public class Reader extends Thread {
 
 		  while (doIt) {
 				try {
-					 vel = velChan.get();
-					 pos = posChan.get();
-					 ctrl = ctrlChan.get();
+					yValue = yChan.get();
+					refValue = refChan.get();
+					uValue = uChan.get();
+					for(int i = 0; i < sChan.length; i++){
+						 states[i] = sChan[i].get();
+					}
 				} catch (Exception e) {
 					 System.out.println(e);
 				} 
 
 				pd = new PlotData();
-				pd.setY(vel);
-				pd.setRef(pos);
-				pd.setX(realTime);
+				pd.y = yValue;
+				pd.ref = refValue;
+				pd.u = uValue;
+				pd.x = realTime;
+				pd.states = states;
 				opcom.putMeasurementDataPoint(pd);
-	    
-				dp = new DoublePoint(realTime,ctrl);
-				opcom.putControlDataPoint(dp);
+				opcom.putControlDataPoint(pd);
 
 				realTime += ((double) h)/1000.0;
 

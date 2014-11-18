@@ -20,7 +20,6 @@ public class ReferenceGenerator extends Thread {
 		private JTextField paramsPeriodField = new JTextField();
 		
 		public RefGUI(double amp, double h) {
-			MainFrame.showLoading();
 			paramsLabelPanel.setLayout(new GridLayout(0,1));
 			paramsLabelPanel.add(new JLabel("Amp: "));
 			paramsLabelPanel.add(new JLabel("Period: "));
@@ -31,7 +30,6 @@ public class ReferenceGenerator extends Thread {
 			paramsPanel.add(paramsLabelPanel);
 			paramsPanel.addGlue();
 			paramsPanel.add(paramsFieldPanel);
-			paramsPanel.addFixed(10);
 			Double d = new Double(amp);
 			paramsAmpField.setText(d.toString());
 			d = new Double(h);
@@ -84,7 +82,12 @@ public class ReferenceGenerator extends Thread {
 					}
 				}
 			});  
-			MainFrame.setPanel(paramsPanel,"RefGen");
+			JFrame frame = new JFrame("RefGen");
+			frame.setVisible(true);
+			frame.getContentPane().add(paramsPanel);
+			frame.setSize(200, 100);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setResizable(false);
 		}
 	}
 	
