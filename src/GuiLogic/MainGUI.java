@@ -40,6 +40,8 @@ public class MainGUI {
 	private MatlabCommands mc;
 	private Validation validator;
 	private JButton btnStart;
+	private JTextField txtVMin;
+	private JTextField txtVMax;
 
 	/**
 	 * Launch the application.
@@ -85,7 +87,7 @@ public class MainGUI {
 		frmStateFeedbackController.setResizable(false);
 		frmStateFeedbackController.getContentPane().setBackground(UIManager.getColor("Button.background"));
 		frmStateFeedbackController.setTitle("State Feedback Controller with Observer");
-		frmStateFeedbackController.setBounds(100, 100, 823, 462);
+		frmStateFeedbackController.setBounds(100, 100, 823, 513);
 		frmStateFeedbackController.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmStateFeedbackController.getContentPane().setLayout(null);
 		
@@ -168,7 +170,7 @@ public class MainGUI {
 		textAreaWarnings.setBackground(Color.WHITE);
 		textAreaWarnings.setForeground(Color.RED);
 		textAreaWarnings.setText(" . . .");
-		textAreaWarnings.setBounds(33, 246, 757, 167);
+		textAreaWarnings.setBounds(33, 287, 757, 167);
 		frmStateFeedbackController.getContentPane().add(textAreaWarnings);
 		
 		btnStart = new JButton("Start");
@@ -201,7 +203,7 @@ public class MainGUI {
 		
 		JLabel lblWarnings = new JLabel("Warnings");
 		lblWarnings.setFont(new Font("Dialog", Font.BOLD, 17));
-		lblWarnings.setBounds(33, 199, 156, 49);
+		lblWarnings.setBounds(33, 237, 156, 49);
 		frmStateFeedbackController.getContentPane().add(lblWarnings);
 		
 		JLabel lblParameters = new JLabel("Parameters");
@@ -223,7 +225,7 @@ public class MainGUI {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqub and Hassan\n\n For more information, please contact us. All right reserved", "About us", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqub and Hassan\n\n For more information, please contact us. All right reserved©", "About us", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		mnFile.add(mntmAbout);
@@ -255,6 +257,28 @@ public class MainGUI {
 		});
 		btnNewButton.setBounds(455, 190, 137, 23);
 		frmStateFeedbackController.getContentPane().add(btnNewButton);
+		
+		JLabel lblVmin = new JLabel("V-min:");
+		lblVmin.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblVmin.setBounds(33, 183, 70, 15);
+		frmStateFeedbackController.getContentPane().add(lblVmin);
+		
+		JLabel lblVmax = new JLabel("V-max:");
+		lblVmax.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblVmax.setBounds(33, 210, 70, 15);
+		frmStateFeedbackController.getContentPane().add(lblVmax);
+		
+		txtVMin = new JTextField();
+		txtVMin.setToolTipText("Limit the minimum value of control input");
+		txtVMin.setBounds(215, 181, 146, 19);
+		frmStateFeedbackController.getContentPane().add(txtVMin);
+		txtVMin.setColumns(10);
+		
+		txtVMax = new JTextField();
+		txtVMax.setToolTipText("Limit the maximum value of control input");
+		txtVMax.setColumns(10);
+		txtVMax.setBounds(215, 208, 146, 19);
+		frmStateFeedbackController.getContentPane().add(txtVMax);
 	}
 	
 	public void printErrorMessage(String warning){
