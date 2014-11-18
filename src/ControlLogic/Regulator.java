@@ -50,7 +50,7 @@ public class Regulator extends Thread{
 //				uChan.set(u);
 				testU = u;
 			} catch (Exception e) {
-				System.err.println("Could not set u.");
+				System.err.println("Couldn't set u.");
 			}
 			try {
 				stateFeedback.updateState(u);
