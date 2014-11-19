@@ -31,8 +31,8 @@ public class MatlabCommands {
 		proxy.eval(command);
 	}
 	
-	public double getVariable(String command) throws MatlabInvocationException{
-		return ((double[])proxy.getVariable(command))[0];
+	public double[] getVariables(String command) throws MatlabInvocationException{
+		return (double[])proxy.getVariable(command);
 	}
 	
 	public void tearDown(){
@@ -51,11 +51,12 @@ public class MatlabCommands {
 		proxy.eval("y = " + y + ";");
 		proxy.eval("uc = " + yRef + ";");
 		proxy.eval("u = Lc*uc - L*xhat - li*xi");
-		return getVariable("u");
+		return getVariables("u")[0];
 	}
 
-	public void updateStates() throws MatlabInvocationException {
-		proxy.eval("intermediate = AR*[xhat ; xi] + BRy*y + BRr*uc;xhat=intermediate(1:size(intermediate,1)-1);xi=intermediate(size(intermediate,1));");		
+	public double[] updateStates() throws MatlabInvocationException {
+		proxy.eval("intermediate = AR*[xhat ; xi] + BRy*y + BRr*uc;xhat=intermediate(1:size(intermediate,1)-1);xi=intermediate(size(intermediate,1));");
+		return getVariables("xhat");
 	}
 
 	public void setParams(String a, String b, String c, String d, String h,

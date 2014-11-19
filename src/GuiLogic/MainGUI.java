@@ -61,7 +61,6 @@ public class MainGUI {
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
-//			UIManager.setLookAndFeel ( "com.alee.laf.WebLookAndFeel" );
 		} catch (Exception e) { }
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

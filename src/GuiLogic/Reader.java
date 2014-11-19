@@ -82,10 +82,13 @@ public class Reader extends Thread {
 		  stopThread();
     }
 
-	public void updateParams(double u, double y, double yRef) {
+	public void updateParams(double u, double y, double yRef, double[] states) {
 		yChan.set(y);
 		refChan.set(yRef);
 		uChan.set(u);
+		for(int i = 0; i < sChan.length; i++){
+			sChan[i].set(states[i]);
+		}
 	}
 
 	public void setPlotter(OpCom opCom) {

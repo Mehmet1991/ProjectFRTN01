@@ -6,6 +6,5 @@
 	<classpathentry kind="lib" path="resources/regler.jar"/>
 	<classpathentry kind="lib" path="resources/virtualsimulator.jar"/>
 	<classpathentry kind="lib" path="resources/JTattoo-1.6.11.jar"/>
-	<classpathentry kind="lib" path="resources/weblaf-complete-1.28.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

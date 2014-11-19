@@ -59,8 +59,8 @@ public class Regulator extends Thread{
 				}
 			}
 			try {
-				stateFeedback.updateState(u);
-				reader.updateParams(u, y, yRef);
+				double[] states = stateFeedback.updateState(u);
+				reader.updateParams(u, y, yRef, states);
 			} catch (MatlabInvocationException e) {
 				validation.setError(e.getMessage());
 			}

@@ -9,8 +9,8 @@ public class StateFeedback {
 		this.mc = mc;
 	}
 
-	public void updateState(double u) throws MatlabInvocationException {
-		mc.updateStates();
+	public double[] updateState(double u) throws MatlabInvocationException {
+		return mc.updateStates();
 	}
 
 	public double calculateOutput(double y, double yRef) throws MatlabInvocationException {
