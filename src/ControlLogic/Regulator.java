@@ -14,15 +14,17 @@ public class Regulator extends Thread{
     private AnalogOut uChan;
     private double minValue, maxValue;
     private Reader reader;
-    private double testU;
+    private boolean isSimulation = true;
 	
 	public Regulator(Reader reader, Validation validation, StateFeedback stateFeedback, ReferenceGenerator refgen, double vMin, double vMax) throws IOChannelException{
 		this.validation = validation;
 		this.stateFeedback = stateFeedback;
 		this.refgen = refgen;
 		this.reader = reader;
-//		yChan = new AnalogIn(1);
-//		uChan = new AnalogOut(1);
+		if(!isSimulation){
+			yChan = new AnalogIn(1);
+			uChan = new AnalogOut(1);
+		}
 		minValue = vMin;
 		maxValue = vMax;
 	}
@@ -33,12 +35,15 @@ public class Regulator extends Thread{
 			double u = 0;
 			double yRef = refgen.getRef();
 			double y = 0;
-			y = yRef;
-//			try {
-//				y = yChan.get();
-//			} catch (IOChannelException e) {
-//				System.err.println("Could not read y.");
-//			} 
+			if(isSimulation){
+				y = yRef;
+			}else{
+				try {
+					y = yChan.get();
+				} catch (IOChannelException e) {
+					System.err.println("Could not read y.");
+				} 
+			}
 			try {
 				
 				u = stateFeedback.calculateOutput(y, yRef);
@@ -46,11 +51,12 @@ public class Regulator extends Thread{
 				validation.setError(e.toString());
 			}
 			u = limit(u);
-			try {
-//				uChan.set(u);
-				testU = u;
-			} catch (Exception e) {
-				System.err.println("Couldn't set u.");
+			if(!isSimulation){
+				try {
+					uChan.set(u);
+				} catch (Exception e) {
+					System.err.println("Couldn't set u.");
+				}
 			}
 			try {
 				stateFeedback.updateState(u);
