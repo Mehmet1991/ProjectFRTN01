@@ -46,10 +46,14 @@ public class MainGUI {
 	private JTextField txtVMin;
 	private JTextField txtVMax;
 	private double vMin, vMax = 0;
-	private boolean savedParams = true;
-	public static boolean plotterCreated = false;
+	
 	private Reader reader;
+	private Regulator r;
+	
 	private boolean isStarted;
+	public static boolean plotterCreated = false;
+	public static boolean refgenCreated = false;
+	private boolean savedParams = true;
 
 	/**
 	 * Launch the application.
@@ -193,12 +197,14 @@ public class MainGUI {
 						reader = new Reader(opCom);
 						opCom.initializeGUI();
 						opCom.start();
-						plotterCreated = true;
 						reader.start();
 						ReferenceGenerator refgen = new ReferenceGenerator(10, 1);
 						refgen.start();
-						new Regulator(reader, validator, new StateFeedback(mc), refgen, vMin, vMax).start();
+						r = new Regulator(reader, validator, new StateFeedback(mc), refgen, vMin, vMax);
+						r.start();
 						isStarted = true;
+						plotterCreated = true;
+						refgenCreated = true;
 					}
 				} catch (MatlabInvocationException | MatlabConnectionException | IOException e) {
 					printErrorMessage(e.getLocalizedMessage());
@@ -265,6 +271,25 @@ public class MainGUI {
 		});
 		mnNewMenu.add(mntmNewPlotter);
 		
+		JMenuItem mntmNewMenuItem = new JMenuItem("New ReferenceGenerator");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(!refgenCreated) {
+					if(isStarted) {
+						ReferenceGenerator refgen = new ReferenceGenerator(10, 1);
+						refgen.start();
+						r.setRefgen(refgen);
+						refgenCreated = true;
+					} else {
+						JOptionPane.showMessageDialog(frmStateFeedbackController, "The process must be running first. Press 'Start'", "Start the process", JOptionPane.PLAIN_MESSAGE);
+					}
+				} else {
+					JOptionPane.showMessageDialog(frmStateFeedbackController, "Only one instance of reference generator can be running at the same time!", "Warning", JOptionPane.PLAIN_MESSAGE);
+				}
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem);
+		
 		JMenu mnFile = new JMenu("Help");
 		menuBar.add(mnFile);
 		
@@ -316,13 +341,13 @@ public class MainGUI {
 		frmStateFeedbackController.getContentPane().add(lblVmax);
 		
 		txtVMin = new JTextField();
-		txtVMin.setToolTipText("Limit the minimum value of control input");
+		txtVMin.setToolTipText("Limit the minimum value of control input (must be a number)");
 		txtVMin.setBounds(215, 181, 146, 19);
 		frmStateFeedbackController.getContentPane().add(txtVMin);
 		txtVMin.setColumns(10);
 		
 		txtVMax = new JTextField();
-		txtVMax.setToolTipText("Limit the maximum value of control input");
+		txtVMax.setToolTipText("Limit the maximum value of control input (must be a number)");
 		txtVMax.setColumns(10);
 		txtVMax.setBounds(215, 208, 146, 19);
 		frmStateFeedbackController.getContentPane().add(txtVMax);

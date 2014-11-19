@@ -64,4 +64,8 @@ public class Regulator extends Thread{
 	private double limit(double u) {
 		return u > maxValue ? maxValue : (u < minValue) ? minValue : u;
 	}
+
+	public void setRefgen(ReferenceGenerator refgen) {
+		this.refgen = refgen;
+	}
 }

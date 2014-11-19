@@ -2,8 +2,12 @@ package ControlLogic;
 
 
 import javax.swing.*;
+
+import GuiLogic.MainGUI;
+
 import java.awt.*;
 import java.awt.event.*;
+
 import se.lth.control.*;
 
 public class ReferenceGenerator extends Thread {
@@ -89,6 +93,11 @@ public class ReferenceGenerator extends Thread {
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame.setResizable(false);
 			frame.setLocationRelativeTo(null);
+			frame.addWindowListener(new WindowAdapter() {
+					 public void windowClosing(WindowEvent e) {
+						 MainGUI.refgenCreated = false;
+					 }
+			});
 		}
 	}
 	
