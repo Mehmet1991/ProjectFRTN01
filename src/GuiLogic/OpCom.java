@@ -77,12 +77,11 @@ public class OpCom {
 		  // WindowListener that exits the system if the main window is closed.
 		  frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-//		  frame.addWindowListener(new WindowAdapter() {
-//					 public void windowClosing(WindowEvent e) {
-//						  stopThread();
-//						  System.exit(0);
-//					 }
-//				});
+		  frame.addWindowListener(new WindowAdapter() {
+					 public void windowClosing(WindowEvent e) {
+						 MainGUI.plotterCreated = false;
+					 }
+				});
 
 		  // Set guiPanel to be content pane of the frame.
 		  frame.getContentPane().add(plotterPanel, BorderLayout.CENTER);

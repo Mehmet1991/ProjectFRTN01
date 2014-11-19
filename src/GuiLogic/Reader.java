@@ -2,7 +2,7 @@ package GuiLogic;
 import SimEnvironment.AnalogSink;
 
 public class Reader extends Thread {
-    private OpCom opcom;
+    private OpCom opCom;
     private boolean doIt = true;
 
 	 public AnalogSink yChan;
@@ -11,8 +11,8 @@ public class Reader extends Thread {
 	 public AnalogSink sChan[] = new AnalogSink[4];
 
     /** Constructor. Sets initial values of the controller parameters and initial mode. */
-    public Reader(OpCom opcom) {
-		  this.opcom = opcom;
+    public Reader(OpCom opCom) {
+		  this.opCom = opCom;
     }
 
     /** Run method. Sends data periodically to Opcom. */
@@ -57,8 +57,8 @@ public class Reader extends Thread {
 				pd.u = uValue;
 				pd.x = realTime;
 				pd.states = states;
-				opcom.putMeasurementDataPoint(pd);
-				opcom.putControlDataPoint(pd);
+				opCom.putMeasurementDataPoint(pd);
+				opCom.putControlDataPoint(pd);
 
 				realTime += ((double) h)/1000.0;
 
@@ -86,6 +86,11 @@ public class Reader extends Thread {
 		yChan.set(y);
 		refChan.set(yRef);
 		uChan.set(u);
+	}
+
+	public void setPlotter(OpCom opCom) {
+		this.opCom = opCom;
+		
 	} 
 
 }

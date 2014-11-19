@@ -47,6 +47,9 @@ public class MainGUI {
 	private JTextField txtVMax;
 	private double vMin, vMax = 0;
 	private boolean savedParams = true;
+	public static boolean plotterCreated = false;
+	private Reader reader;
+	private boolean isStarted;
 
 	/**
 	 * Launch the application.
@@ -187,13 +190,15 @@ public class MainGUI {
 						initiateMatlab();
 						mc.performEval();
 						OpCom opCom = new OpCom();
-						Reader reader = new Reader(opCom);
+						reader = new Reader(opCom);
 						opCom.initializeGUI();
 						opCom.start();
+						plotterCreated = true;
 						reader.start();
 						ReferenceGenerator refgen = new ReferenceGenerator(10, 1);
 						refgen.start();
 						new Regulator(reader, validator, new StateFeedback(mc), refgen, vMin, vMax).start();
+						isStarted = true;
 					}
 				} catch (MatlabInvocationException | MatlabConnectionException | IOException e) {
 					printErrorMessage(e.getLocalizedMessage());
@@ -209,6 +214,7 @@ public class MainGUI {
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				btnStart.setEnabled(true);
+				isStarted = false;
 			}
 		});
 		btnStop.setBackground(Color.LIGHT_GRAY);
@@ -234,13 +240,38 @@ public class MainGUI {
 		menuBar.setBounds(0, 0, 817, 25);
 		frmStateFeedbackController.getContentPane().add(menuBar);
 		
-		JMenu mnFile = new JMenu("File");
+		JMenu mnNewMenu = new JMenu("Create");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmNewPlotter = new JMenuItem("New Plotter");
+		mntmNewPlotter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(!plotterCreated) {
+					if(!isStarted) {
+						JOptionPane.showMessageDialog(frmStateFeedbackController, "Nothing to plot! The process must be running first", "Nothing to plot", JOptionPane.PLAIN_MESSAGE);
+					} else {
+						OpCom opCom = new OpCom();
+						opCom.initializeGUI();
+						opCom.start();
+						plotterCreated = true;
+						if(reader != null) {						
+							reader.setPlotter(opCom);
+						}
+					}
+				} else {
+					JOptionPane.showMessageDialog(frmStateFeedbackController, "Only one instance of plotter can be running at the same time!", "Warning", JOptionPane.PLAIN_MESSAGE);
+				}
+			}
+		});
+		mnNewMenu.add(mntmNewPlotter);
+		
+		JMenu mnFile = new JMenu("Help");
 		menuBar.add(mnFile);
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqub and Hassan\n\n For more information, please contact us. All right reservedÂ©", "About us", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqub and Hassan\n\n For more information, please contact us. All right reserved ©", "About us", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		mnFile.add(mntmAbout);
