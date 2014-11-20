@@ -5,7 +5,7 @@ D = 0;
 
 
 % Design of state feedback and integral action system
-Ae = [A zeros(2,1); -C 0]; 
+Ae = [A zeros(size(A,1),1); -C 0]; 
 Be = [B; 0]; 
 
 a = 0.9;
