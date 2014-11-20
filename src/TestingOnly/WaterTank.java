@@ -104,6 +104,7 @@ public class WaterTank {
 		frame.add(label);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
 	}
 	
 class WaterTankPanel extends JPanel{
