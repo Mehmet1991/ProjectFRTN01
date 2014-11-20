@@ -115,11 +115,11 @@ class WaterTankPanel extends JPanel{
 	
 	public void paint 	(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-     	RenderingHints rh = new RenderingHints(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-     	rh.add(new RenderingHints(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE));
-     	rh.add(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-     	rh.add(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
-        g2.setRenderingHints(rh);
+//     	RenderingHints rh = new RenderingHints(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+//     	rh.add(new RenderingHints(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE));
+//     	rh.add(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+//     	rh.add(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
+//        g2.setRenderingHints(rh);
      	g2.setColor(interpolateColor(Color.DARK_GRAY, Color.GRAY, 0.5f));
      	g2.fillRoundRect(12,14,242,390,20,20);
      	g2.setColor(interpolateColor(new Color(50,250,255), new Color(50,50,255), 0.500f));

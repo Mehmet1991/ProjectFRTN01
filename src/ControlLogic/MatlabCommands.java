@@ -17,7 +17,7 @@ public class MatlabCommands {
 		/*
 		 * �ndra till .setHidden(false) f�r att kunna se exakt vad som h�nder i matlab
 		 */
-		options = new MatlabProxyFactoryOptions.Builder().setMatlabStartingDirectory(new File("src/")).setHidden(true).build();
+		options = new MatlabProxyFactoryOptions.Builder().setMatlabStartingDirectory(new File("src/")).setHidden(false).build();
 		factory = new MatlabProxyFactory(options);
 		proxy = factory.getProxy();
 		proxy.eval("addpath('" + new File("src").getAbsolutePath() + "')");

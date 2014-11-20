@@ -1,24 +1,31 @@
-A = [0 1 0 0; -174.67 -1.36 174.67 0; 0 0 0 1; 195.6947 0 -195.6947 -1.82];
-B = [0; 1.29257; 0; 0];
-C = [0 0 280 0];
+A = [  -0.1004   -0.0403 ; 0.0625  0];
+B = [0.5 ; 0];
+C = [0 0.4016];
 D = 0;
 
-omegaa = 2;
-zetaa = 0.866;
-omegab = 2;
-zetab = 0.866;
+a = 1;
+w = 0.15;
+zeta = 0.7;
 
-omegac = 1;
-zetac = 0.866;
-omegad = 1;
-zetad = 0.866;
+a2 = 1;
+w2 =2* 0.15;
+zeta2 = 0.7;
+
+
+s2kv = a*w + 2*zeta*w;
+skv = 2*a*zeta*w^2 + w^2;
+konst = a*w^3;
+
+s2kv2 = a2*w2 + 2*zeta2*w2;
+skv2 = 2*a2*zeta2*w2^2 + w2^2;
+konst2 = a2*w2^3;
 
 xhat = zeros(size(A,1),1);
 xi = 0;
-y = 0;
+y = 1;
 uc = 0;
 
-omegae = 1;
+%omegae = 1;
 
 Gp = ss(A,B,C,D); %transfer function of the process
 
@@ -33,8 +40,15 @@ Bnew = [Gam; 0];
 Cnew = [C 0];
 
 %state feedback and integral action design
-pc = conv([1 2*omegaa*zetaa omegaa^2],[1 2*omegab*zetab omegab^2]); %control poles in continuous time
-pc = conv(pc, [1 omegae]);
+%pc = conv([1 2*omegaa*zetaa omegaa^2],[1 2*omegab*zetab omegab^2]); %control poles in continuous time
+%pc = conv(pc, [1 omegae]);
+
+
+
+pc = [1 s2kv skv konst];
+
+
+
 pc = roots(pc);
 pcd = exp(pc*h); %in discrete time
 Le = place(Anew, Bnew, pcd);
@@ -42,13 +56,15 @@ L = Le(1:size(Anew,1)-1);
 li = Le(size(Anew,1));
 
 %observer design
-po = roots(conv([1 2*omegac*zetac omegac^2],[1 2*omegad*zetad omegad^2])); %observer poles in continuous time
+%po = roots(conv([1 2*omegac*zetac omegac^2],[1 2*omegad*zetad omegad^2])); %observer poles in continuous time
+po = roots([1 2*zeta2*w2 w2^2]);
 pod = exp(po*h);
 K = place(Phi', C', pod)';
 
 %reference handling
-Hcl = ss(Anew-Bnew*Le, Bnew, Cnew, 0, h);
-Lc = 1/dcgain(Hcl);
+%Hcl = ss(Anew-Bnew*Le, Bnew, Cnew, 0, h);
+%Lc = 1/dcgain(Hcl);
+Lc = 1/(C*(eye(size(Phi,1))-Phi+Gam*L)^(-1)*Gam)
 
 %form the controller (observer + state feedback + integral action)
 AR = [Phi-Gam*L-K*C -Gam*li; zeros(1,size(Phi,1)) 1];

@@ -27,6 +27,8 @@ public class Regulator extends Thread{
 		}
 		minValue = vMin;
 		maxValue = vMax;
+		minValue = 0;
+		maxValue = 10;
 	}
 	
 	@Override
@@ -36,7 +38,7 @@ public class Regulator extends Thread{
 			double yRef = refgen.getRef();
 			double y = 0;
 			if(isSimulation){
-				y = yRef;
+				y = yRef * 2;
 			}else{
 				try {
 					y = yChan.get();
