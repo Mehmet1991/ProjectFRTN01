@@ -14,7 +14,7 @@ public class Regulator extends Thread{
     private AnalogOut uChan;
     private double minValue, maxValue;
     private Reader reader;
-    private boolean isSimulation = true;
+    private boolean isSimulation = false;
 	
 	public Regulator(Reader reader, Validation validation, StateFeedback stateFeedback, ReferenceGenerator refgen, double vMin, double vMax) throws IOChannelException{
 		this.validation = validation;
@@ -22,8 +22,8 @@ public class Regulator extends Thread{
 		this.refgen = refgen;
 		this.reader = reader;
 		if(!isSimulation){
-			yChan = new AnalogIn(1);
-			uChan = new AnalogOut(1);
+			yChan = new AnalogIn(31);
+			uChan = new AnalogOut(30);
 		}
 		minValue = vMin;
 		maxValue = vMax;
@@ -36,6 +36,7 @@ public class Regulator extends Thread{
 		while(!Thread.interrupted()){
 			double u = 0;
 			double yRef = refgen.getRef();
+			System.out.println(yRef);
 			double y = 0;
 			if(isSimulation){
 				y = yRef * 2;

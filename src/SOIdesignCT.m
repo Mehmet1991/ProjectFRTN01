@@ -24,7 +24,7 @@ konst = a*w^3;
 
 xhat = zeros(size(A,1),1);
 xi = 0;
-y = 1;
+y = 0;
 uc = 0;
 
 
@@ -32,7 +32,7 @@ pc = roots([1 s2kv skv konst]);
 Le = place(Ae,Be,pc); 
 L = Le(1:size(A,1));
 li = Le(size(A,1)+1);
-lr = 0; % direct coupling from reference value, not needed since use of integral action
+Lc = 0; % direct coupling from reference value, not needed since use of integral action
 
 
 % Design of observer
@@ -43,20 +43,20 @@ K = place(A',C',po)'; % calculate K vector
 % Design of SOI controller system, the total
 AR = [A-B*L-K*C -B*li; zeros(1,size(A,1)) 0];
 BRy = [K; -1];
-BRr = [B*lr; 1];
+BRr = [B*Lc; 1];
 CR = [-L -li];
 DRy = 0;
-DRr = lr;
+DRr = Lc;
 Gr = -ss(AR,BRy,CR,DRy); 
 
-h = 0.2;
+h = 0.5;
 Hp = c2d(Gr,h); % sample and discretize the controller
 
 [AR2 BRy2 CR2 DRy2] = ssdata(Hp); %get the discretized matrices
 
 
-T = 0:0.2:10;       % simulation time = 10 seconds
-U = ones(size(T)); % u = 1; this is a step input
-[Y, Tsim, X] = lsim(Hp,U,T);
-figure(1)
-plot(Tsim,Y) %plot the stepresponse
+%T = 0:0.2:10;       % simulation time = 10 seconds
+%U = ones(size(T)); % u = 1; this is a step input
+%[Y, Tsim, X] = lsim(Hp,U,T);
+%figure(1)
+%plot(Tsim,Y) %plot the stepresponse

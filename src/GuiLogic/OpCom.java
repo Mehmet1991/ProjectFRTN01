@@ -35,7 +35,7 @@ public class OpCom {
     /** Constructor. Creates the plotter panels. */
     public OpCom() {
 		  measurementPlotter = new PlotterPanel(3, 4); // Two channels
-		  controlPlotter = new PlotterPanel(4, 4);
+		  controlPlotter = new PlotterPanel(2, 4);
     }
 
     /** Starts the threads. */
@@ -103,9 +103,9 @@ public class OpCom {
 		  double time = pd.x;
 		  double s1 = pd.states[0];
 		  double s2 = pd.states[1];
-		  double s3 = pd.states[2];
-		  double s4 = pd.states[3];
-		  controlPlotter.putData(time, s1, s2, s3, s4);
+//		  double s3 = pd.states[2];
+//		  double s4 = pd.states[3];
+		  controlPlotter.putData(time, s1, s2);
     }
     
     /** Called by Reader to put a measurement data point in the buffer. */

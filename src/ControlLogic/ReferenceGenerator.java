@@ -117,7 +117,7 @@ public class ReferenceGenerator extends Thread {
 			while (!isInterrupted()) {
 				synchronized (this) {
 					sign = - sign;
-					ref = amplitude * sign;
+					ref = amplitude;
 				}
 				sleep(period);
 			}

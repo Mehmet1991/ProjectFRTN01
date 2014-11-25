@@ -24,7 +24,7 @@ public class MatlabCommands {
 	}
 
 	public void performEval() throws MatlabInvocationException, MatlabConnectionException {	
-		proxy.eval("SOIDesign");
+		proxy.eval("SOIdesignCT");
 	}
 	
 	public void eval(String command) throws MatlabInvocationException{
@@ -50,12 +50,15 @@ public class MatlabCommands {
 	public double calculateU(double y, double yRef) throws MatlabInvocationException {
 		proxy.eval("y = " + y + ";");
 		proxy.eval("uc = " + yRef + ";");
-		proxy.eval("u = Lc*uc - L*xhat - li*xi");
+		proxy.eval("u = Lc*uc - L*xhat - li*xi;");
+		proxy.eval("if(y >= uc) u=0; end");
+		proxy.eval("if(u<0) u=0; end");
+		proxy.eval("u");
 		return getVariables("u")[0];
 	}
 
 	public double[] updateStates() throws MatlabInvocationException {
-		proxy.eval("intermediate = AR*[xhat ; xi] + BRy*y + BRr*uc;xhat=intermediate(1:size(intermediate,1)-1);xi=intermediate(size(intermediate,1));");
+		proxy.eval("intermediate = AR2*[xhat ; xi] + BRy2*y + BRr*uc;xhat=intermediate(1:size(intermediate,1)-1);xi=intermediate(size(intermediate,1));");
 		return getVariables("xhat");
 	}
 

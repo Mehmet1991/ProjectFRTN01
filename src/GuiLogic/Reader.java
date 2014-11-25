@@ -8,7 +8,7 @@ public class Reader extends Thread {
 	 public AnalogSink yChan;
 	 public AnalogSink refChan;
 	 public AnalogSink uChan;
-	 public AnalogSink sChan[] = new AnalogSink[4];
+	 public AnalogSink sChan[] = new AnalogSink[2];
 
     /** Constructor. Sets initial values of the controller parameters and initial mode. */
     public Reader(OpCom opCom) {
@@ -86,9 +86,9 @@ public class Reader extends Thread {
 		yChan.set(y);
 		refChan.set(yRef);
 		uChan.set(u);
-//		for(int i = 0; i < sChan.length; i++){
-//			sChan[i].set(states[i]);
-//		}
+		for(int i = 0; i < sChan.length; i++){
+			sChan[i].set(states[i]);
+		}
 	}
 
 	public void setPlotter(OpCom opCom) {
