@@ -21,6 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
+import se.lth.control.realtime.AnalogIn;
+import se.lth.control.realtime.AnalogOut;
+import se.lth.control.realtime.IOChannelException;
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
 import ControlLogic.MatlabCommands;
@@ -31,6 +34,8 @@ import ControlLogic.StateFeedback;
 
 public class MainGUI {
 
+	private static final int yChannel = 31;
+	private static final int uChannel = 30;
 	private JFrame frmStateFeedbackController;
 	private JTextField txtA;
 	private JTextField txtB;
@@ -46,9 +51,11 @@ public class MainGUI {
 	private JTextField txtVMin;
 	private JTextField txtVMax;
 	private double vMin, vMax = 0;
+	private AnalogIn yChan;
+    private AnalogOut uChan;
 	
 	private Reader reader;
-	private Regulator r;
+	private Regulator regulator;
 	
 	private boolean isStarted;
 	public static boolean plotterCreated = false;
@@ -92,6 +99,13 @@ public class MainGUI {
 			public void windowClosing(WindowEvent arg0) {
 				if(mc != null){
 					mc.tearDown();
+				}
+				if(uChan != null){
+					try {
+						uChan.set(0);
+					} catch (IOChannelException e) {
+						System.out.println("Could not reset input!");
+					}
 				}
 			}
 		});
@@ -199,8 +213,14 @@ public class MainGUI {
 						reader.start();
 						ReferenceGenerator refgen = new ReferenceGenerator(10, 1);
 						refgen.start();
-						r = new Regulator(reader, validator, new StateFeedback(mc), refgen, vMin, vMax);
-						r.start();
+						if(yChan == null){
+							yChan = new AnalogIn(yChannel);
+						}
+						if(uChan == null){
+							uChan = new AnalogOut(uChannel);
+						}
+						regulator = new Regulator(reader, validator, new StateFeedback(mc), refgen, yChan, uChan, vMin, vMax);
+						regulator.start();
 						isStarted = true;
 						plotterCreated = true;
 						refgenCreated = true;
@@ -220,6 +240,9 @@ public class MainGUI {
 			public void actionPerformed(ActionEvent arg0) {
 				btnStart.setEnabled(true);
 				isStarted = false;
+				regulator.interrupt();
+			
+				
 			}
 		});
 		btnStop.setBackground(Color.LIGHT_GRAY);
@@ -277,7 +300,7 @@ public class MainGUI {
 					if(isStarted) {
 						ReferenceGenerator refgen = new ReferenceGenerator(10, 1);
 						refgen.start();
-						r.setRefgen(refgen);
+						regulator.setRefgen(refgen);
 						refgenCreated = true;
 					} else {
 						JOptionPane.showMessageDialog(frmStateFeedbackController, "The process must be running first. Press 'Start'", "Start the process", JOptionPane.PLAIN_MESSAGE);
@@ -295,7 +318,7 @@ public class MainGUI {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqub and Hassan\n\n For more information, please contact us. All right reserved ©", "About us", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqub and Hassan\n\n For more information, please contact us. All right reserved ï¿½", "About us", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		mnFile.add(mntmAbout);

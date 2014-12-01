@@ -80,6 +80,7 @@ public class Reader extends Thread {
     /** Called by Opcom when the Stop button is pressed. */
     public synchronized void shutDown() {
 		  stopThread();
+		  opCom.shutDown();
     }
 
 	public void updateParams(double u, double y, double yRef, double[] states) {

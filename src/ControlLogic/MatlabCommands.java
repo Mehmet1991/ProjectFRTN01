@@ -25,6 +25,7 @@ public class MatlabCommands {
 
 	public void performEval() throws MatlabInvocationException, MatlabConnectionException {	
 		proxy.eval("SOIdesignCT");
+//		proxy.eval("SOIDesign");
 	}
 	
 	public void eval(String command) throws MatlabInvocationException{
@@ -51,8 +52,8 @@ public class MatlabCommands {
 		proxy.eval("y = " + y + ";");
 		proxy.eval("uc = " + yRef + ";");
 		proxy.eval("u = Lc*uc - L*xhat - li*xi;");
-		proxy.eval("if(y >= uc) u=0; end");
-		proxy.eval("if(u<0) u=0; end");
+//		proxy.eval("if(y >= uc) u=0; end");
+//		proxy.eval("if(u<0) u=0; end");
 		proxy.eval("u");
 		return getVariables("u")[0];
 	}

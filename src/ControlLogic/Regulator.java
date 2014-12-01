@@ -16,14 +16,14 @@ public class Regulator extends Thread{
     private Reader reader;
     private boolean isSimulation = false;
 	
-	public Regulator(Reader reader, Validation validation, StateFeedback stateFeedback, ReferenceGenerator refgen, double vMin, double vMax) throws IOChannelException{
+	public Regulator(Reader reader, Validation validation, StateFeedback stateFeedback, ReferenceGenerator refgen, AnalogIn yChan, AnalogOut uChan, double vMin, double vMax) throws IOChannelException{
 		this.validation = validation;
 		this.stateFeedback = stateFeedback;
 		this.refgen = refgen;
 		this.reader = reader;
 		if(!isSimulation){
-			yChan = new AnalogIn(31);
-			uChan = new AnalogOut(30);
+			this.yChan = yChan;
+			this.uChan = uChan;
 		}
 		minValue = vMin;
 		maxValue = vMax;
@@ -68,6 +68,13 @@ public class Regulator extends Thread{
 				validation.setError(e.getMessage());
 			}
 		}
+		try {
+			uChan.set(0);
+			refgen.shutDown();
+			reader.shutDown();
+		} catch (IOChannelException e) {
+			validation.setError("Could not stop the process due to \n\t" + e.getMessage());
+		}
 	}
 
 	private double limit(double u) {
@@ -77,4 +84,16 @@ public class Regulator extends Thread{
 	public void setRefgen(ReferenceGenerator refgen) {
 		this.refgen = refgen;
 	}
+}
+
+class MyAnalogIn extends AnalogIn{
+
+	public MyAnalogIn(final int index) throws IOChannelException {
+		super(index);
+	}
+	
+	public void shutdown() throws IOChannelException{
+		close();
+	}
+	
 }

@@ -127,4 +127,8 @@ public class OpCom {
 			  }
 		  }
     }
+    
+    public void shutDown(){
+    	frame.dispose();
+    }
 }

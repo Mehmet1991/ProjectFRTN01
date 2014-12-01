@@ -15,6 +15,7 @@ public class ReferenceGenerator extends Thread {
 	private int period;
 	private double sign = -1.0;
 	private double ref;
+	private JFrame frame;
 	
 	private class RefGUI {
 		private JPanel paramsLabelPanel = new JPanel();
@@ -86,7 +87,7 @@ public class ReferenceGenerator extends Thread {
 					}
 				}
 			});  
-			JFrame frame = new JFrame("RefGen");
+			frame = new JFrame("RefGen");
 			frame.setVisible(true);
 			frame.getContentPane().add(paramsPanel);
 			frame.setSize(200, 100);
@@ -124,5 +125,10 @@ public class ReferenceGenerator extends Thread {
 		} catch (InterruptedException e) {
 			// Requested to stop
 		}
+	}
+	
+	public void shutDown(){
+		frame.dispose();
+		this.interrupt();
 	}
 }

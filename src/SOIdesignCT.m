@@ -1,8 +1,14 @@
+%A = [ -0.1004 0 ; 0.0625 -0.1004];
+
+A = [-0.0502 0 ; 0.0502 0.0502]; 
+B = [0.2500 ; 0];
+C = [1 0];
+D = [0];
+
 A = [ -0.1004 -0.0403 ; 0.0625 0];
 B = [0.5 ; 0];
 C = [0 0.4016];
 D = 0;
-
 
 % Design of state feedback and integral action system
 Ae = [A zeros(size(A,1),1); -C 0]; 
@@ -14,8 +20,8 @@ zeta = 0.75;
 
 
 
-w2 =1.45*0.115;
-zeta2 = 0.75;
+w2 =0.7;
+zeta2 = 0.2;
 
 
 s2kv = a*w + 2*zeta*w;
@@ -49,7 +55,7 @@ DRy = 0;
 DRr = Lc;
 Gr = -ss(AR,BRy,CR,DRy); 
 
-h = 0.5;
+h = 0.1;
 Hp = c2d(Gr,h); % sample and discretize the controller
 
 [AR2 BRy2 CR2 DRy2] = ssdata(Hp); %get the discretized matrices
