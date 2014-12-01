@@ -5,7 +5,7 @@
 
 A = [-0.0502 0 ; 0.0502 0.0502]; 
 B = [0.2500 ; 0];
-C = [1 0];
+C = [0 1];
 D = [0];
 
 a = 1;
@@ -69,7 +69,7 @@ K = place(Phi', C', pod)';
 %reference handling
 %Hcl = ss(Anew-Bnew*Le, Bnew, Cnew, 0, h);
 %Lc = 1/dcgain(Hcl);
-Lc = 1/(C*(eye(size(Phi,1))-Phi+Gam*L)^(-1)*Gam)
+Lc = 0;
 
 %form the controller (observer + state feedback + integral action)
 AR = [Phi-Gam*L-K*C -Gam*li; zeros(1,size(Phi,1)) 1];
