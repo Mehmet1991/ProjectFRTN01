@@ -34,9 +34,9 @@ public class Regulator extends Thread{
 	@Override
 	public void run(){
 		while(!Thread.interrupted()){
+			long start = System.currentTimeMillis();
 			double u = 0;
 			double yRef = refgen.getRef();
-			System.out.println(yRef);
 			double y = 0;
 			if(isSimulation){
 				y = yRef * 2;
@@ -50,6 +50,7 @@ public class Regulator extends Thread{
 			try {
 				
 				u = stateFeedback.calculateOutput(y, yRef);
+				u+= 4.3;
 			}catch (MatlabInvocationException e) {
 				validation.setError(e.toString());
 			}
@@ -57,13 +58,15 @@ public class Regulator extends Thread{
 			if(!isSimulation){
 				try {
 					uChan.set(u);
+					long duration = System.currentTimeMillis() - start;
+					sleep((long) (200 - duration));
 				} catch (Exception e) {
 					System.err.println("Couldn't set u.");
 				}
 			}
 			try {
 				double[] states = stateFeedback.updateState(u);
-				reader.updateParams(u, y, yRef, states);
+				reader.updateParams(u, y + 4.3, yRef + 4.3, states);
 			} catch (MatlabInvocationException e) {
 				validation.setError(e.getMessage());
 			}
