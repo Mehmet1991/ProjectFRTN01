@@ -1,0 +1,39 @@
+A = [-0.0502 0 ; 0.0502 0.0502];
+B = [0.2500 ; 0];
+C = [0 1];
+D = [0];
+h = 0.44;
+
+Gp = ss(A,B,C,D); %transfer function of the process
+
+Hp = c2d(Gp,h);
+[Phi, Gamma] = ssdata(Hp);
+
+
+%state feedback design
+a2 = 1;
+w2 =2* 0.15;
+zeta2 = 0.7;
+
+po = roots([1 2*zeta2*w2 w2^2]);
+pod = exp(po*h);
+
+L = place(Phi,Gamma,pod)
+
+
+%augmented disturbance observer design
+
+a = 1;
+w = 0.15;
+zeta = 0.7;
+s2kv = a*w + 2*zeta*w;
+skv = 2*a*zeta*w^2 + w^2;
+konst = a*w^3;
+
+pc = [1 s2kv skv konst];
+pc = roots(pc);
+pcd = exp(pc*h); 
+
+Phie = [Phi Gamma; zeros(1,size(A,1)) 1];
+Ce = [C 0];
+Ke = place(Phie',Ce',pcd)'
