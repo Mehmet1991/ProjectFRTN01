@@ -34,8 +34,8 @@ import ControlLogic.StateFeedback;
 
 public class MainGUI {
 
-	private static final int yChannel = 31;
-	private static final int uChannel = 30;
+	private static final int yChannel = 0;
+	private static final int uChannel = 0;
 	private JFrame frmStateFeedbackController;
 	private JTextField txtA;
 	private JTextField txtB;
