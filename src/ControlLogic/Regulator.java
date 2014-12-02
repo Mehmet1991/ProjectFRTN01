@@ -36,7 +36,7 @@ public class Regulator extends Thread{
 		while(!Thread.interrupted()){
 			long start = System.currentTimeMillis();
 			double u = 0;
-			double yRef = refgen.getRef();
+			double yRef = refgen.getRef() +4.5;
 			double y = 0;
 			if(isSimulation){
 				y = yRef * 2;
@@ -49,8 +49,7 @@ public class Regulator extends Thread{
 			}
 			try {
 				
-				u = stateFeedback.calculateOutput(y, yRef);
-				u+= 4.3;
+				u = stateFeedback.calculateOutput(y, yRef) + 4.5;
 			}catch (MatlabInvocationException e) {
 				validation.setError(e.toString());
 			}
@@ -59,14 +58,18 @@ public class Regulator extends Thread{
 				try {
 					uChan.set(u);
 					long duration = System.currentTimeMillis() - start;
-					sleep((long) (200 - duration));
+					try{
+						sleep((long) (20 - duration));
+					}catch(InterruptedException e){
+						break;
+					}
 				} catch (Exception e) {
 					System.err.println("Couldn't set u.");
 				}
 			}
 			try {
-				double[] states = stateFeedback.updateState(u);
-				reader.updateParams(u, y + 4.3, yRef + 4.3, states);
+				double[] states = stateFeedback.updateState();
+				reader.updateParams(u, y, yRef , states);
 			} catch (MatlabInvocationException e) {
 				validation.setError(e.getMessage());
 			}
@@ -74,6 +77,7 @@ public class Regulator extends Thread{
 		try {
 			uChan.set(0);
 			refgen.shutDown();
+			reader.shutDown();
 			reader.shutDown();
 		} catch (IOChannelException e) {
 			validation.setError("Could not stop the process due to \n\t" + e.getMessage());

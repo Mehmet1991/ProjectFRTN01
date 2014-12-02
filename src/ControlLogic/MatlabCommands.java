@@ -17,7 +17,7 @@ public class MatlabCommands {
 		/*
 		 * �ndra till .setHidden(false) f�r att kunna se exakt vad som h�nder i matlab
 		 */
-		options = new MatlabProxyFactoryOptions.Builder().setMatlabStartingDirectory(new File("src/")).setHidden(false).build();
+		options = new MatlabProxyFactoryOptions.Builder().setMatlabStartingDirectory(new File("src/")).setHidden(true).build();
 		factory = new MatlabProxyFactory(options);
 		proxy = factory.getProxy();
 		proxy.eval("addpath('" + new File("src").getAbsolutePath() + "')");
@@ -25,7 +25,8 @@ public class MatlabCommands {
 
 	public void performEval() throws MatlabInvocationException, MatlabConnectionException {	
 		//proxy.eval("SOIdesignCT");
-		proxy.eval("SOIDesign");
+//		proxy.eval("SOIDesign");
+		proxy.eval("augmSOI");
 	}
 	
 	public void eval(String command) throws MatlabInvocationException{
@@ -51,7 +52,8 @@ public class MatlabCommands {
 	public double calculateU(double y, double yRef) throws MatlabInvocationException {
 		proxy.eval("y = " + y + ";");
 		proxy.eval("uc = " + yRef + ";");
-		proxy.eval("u = Lc*uc - L*xhat - li*xi;");
+		//proxy.eval("u = Lc*uc - L*xhat - li*xi;");
+		proxy.eval("u = - L*xhat - vhat + Lc*uc;");
 //		proxy.eval("if(y >= uc) u=0; end");
 //		proxy.eval("if(u<0) u=0; end");
 		proxy.eval("u");
@@ -59,7 +61,8 @@ public class MatlabCommands {
 	}
 
 	public double[] updateStates() throws MatlabInvocationException {
-		proxy.eval("intermediate = AR*[xhat ; xi] + BRy*y + BRr*uc;xhat=intermediate(1:size(intermediate,1)-1);xi=intermediate(size(intermediate,1));");
+		proxy.eval("intermediate = Anew*[xhat;vhat;e] + By*y + Br*uc; xhat=intermediate(1:size(A,1)); vhat=intermediate(size(A,1)+1); e=intermediate(size(A,1)+2)");
+		//proxy.eval("intermediate = AR*[xhat ; xi] + BRy*y + BRr*uc;xhat=intermediate(1:size(intermediate,1)-1);xi=intermediate(size(intermediate,1));");
 		return getVariables("xhat");
 	}
 

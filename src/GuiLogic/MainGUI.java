@@ -211,7 +211,7 @@ public class MainGUI {
 						opCom.initializeGUI();
 						opCom.start();
 						reader.start();
-						ReferenceGenerator refgen = new ReferenceGenerator(10, 1);
+						ReferenceGenerator refgen = new ReferenceGenerator(10, 0);
 						refgen.start();
 						if(yChan == null){
 							yChan = new AnalogIn(yChannel);
