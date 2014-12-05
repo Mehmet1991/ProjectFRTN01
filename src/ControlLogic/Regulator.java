@@ -78,7 +78,6 @@ public class Regulator extends Thread{
 			uChan.set(0);
 			refgen.shutDown();
 			reader.shutDown();
-			reader.shutDown();
 		} catch (IOChannelException e) {
 			validation.setError("Could not stop the process due to \n\t" + e.getMessage());
 		}

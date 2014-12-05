@@ -9,8 +9,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -21,12 +24,13 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
+import matlabcontrol.MatlabConnectionException;
+import matlabcontrol.MatlabInvocationException;
 import se.lth.control.realtime.AnalogIn;
 import se.lth.control.realtime.AnalogOut;
 import se.lth.control.realtime.IOChannelException;
-import matlabcontrol.MatlabConnectionException;
-import matlabcontrol.MatlabInvocationException;
 import ControlLogic.MatlabCommands;
+import ControlLogic.MyProcess;
 import ControlLogic.ReferenceGenerator;
 import ControlLogic.Regulator;
 import ControlLogic.StateFeedback;
@@ -34,8 +38,8 @@ import ControlLogic.StateFeedback;
 
 public class MainGUI {
 
-	private static final int yChannel = 0;
-	private static final int uChannel = 0;
+	private static int yChannel = 0;
+	private static int uChannel = 0;
 	private JFrame frmStateFeedbackController;
 	private JTextField txtA;
 	private JTextField txtB;
@@ -45,6 +49,7 @@ public class MainGUI {
 	private JTextField txtFeedbackPole;
 	private JTextField txtObserverPole;
 	private TextArea textAreaWarnings;
+	private JComboBox comboBoxProcess;
 	private MatlabCommands mc;
 	private Validation validator;
 	private JButton btnStart;
@@ -61,6 +66,8 @@ public class MainGUI {
 	public static boolean plotterCreated = false;
 	public static boolean refgenCreated = false;
 	private boolean savedParams = true;
+	
+	private Map<String, MyProcess> theProcesses;
 
 	/**
 	 * Launch the application.
@@ -86,7 +93,13 @@ public class MainGUI {
 	 */
 	public MainGUI() {
 		validator = new Validation(this);
+		theProcesses = new HashMap<String, MyProcess>();
+		MyProcess watertank = new MyProcess("[-0.0502 0 ; 0.0502 -0.0502]", "[0.2500 ; 0]", "[0 1]", "[0]", "0", "10", "0.1", "Vad ska detta vara :S", "Ingen aning bror");
+		MyProcess DCServo = new MyProcess("[-0.12 0 ; 5 0]", "[2.25 ; 0]", "[0 1]", "[0]", "0", "10", "0.1", "Vad ska detta vara :S", "Ingen aning bror");
+		theProcesses.put("Watertank", watertank);
+		theProcesses.put("DC Servo", DCServo);
 		initialize();
+		setParameters("Watertank");
 	}
 
 	/**
@@ -112,7 +125,7 @@ public class MainGUI {
 		frmStateFeedbackController.setResizable(false);
 		frmStateFeedbackController.getContentPane().setBackground(UIManager.getColor("Button.background"));
 		frmStateFeedbackController.setTitle("State Feedback Controller with Observer");
-		frmStateFeedbackController.setBounds(100, 100, 823, 513);
+		frmStateFeedbackController.setBounds(100, 100, 823, 536);
 		frmStateFeedbackController.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmStateFeedbackController.getContentPane().setLayout(null);
 		
@@ -195,7 +208,7 @@ public class MainGUI {
 		textAreaWarnings.setBackground(Color.WHITE);
 		textAreaWarnings.setForeground(Color.RED);
 		textAreaWarnings.setText(" . . .");
-		textAreaWarnings.setBounds(33, 287, 757, 167);
+		textAreaWarnings.setBounds(33, 319, 757, 167);
 		frmStateFeedbackController.getContentPane().add(textAreaWarnings);
 		
 		btnStart = new JButton("Start");
@@ -214,9 +227,11 @@ public class MainGUI {
 						ReferenceGenerator refgen = new ReferenceGenerator(10, 0);
 						refgen.start();
 						if(yChan == null){
+							yChannel = getProcess().equals("Watertank") ? 31 : 0;
 							yChan = new AnalogIn(yChannel);
 						}
 						if(uChan == null){
+							uChannel = getProcess().equals("Watertank") ? 30 : 0;
 							uChan = new AnalogOut(uChannel);
 						}
 						regulator = new Regulator(reader, validator, new StateFeedback(mc), refgen, yChan, uChan, vMin, vMax);
@@ -252,7 +267,7 @@ public class MainGUI {
 		
 		JLabel lblWarnings = new JLabel("Warnings");
 		lblWarnings.setFont(new Font("Dialog", Font.BOLD, 17));
-		lblWarnings.setBounds(33, 237, 156, 49);
+		lblWarnings.setBounds(33, 264, 156, 49);
 		frmStateFeedbackController.getContentPane().add(lblWarnings);
 		
 		JLabel lblParameters = new JLabel("Parameters");
@@ -318,7 +333,7 @@ public class MainGUI {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqub and Hassan\n\n For more information, please contact us. All right reserved �", "About us", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frmStateFeedbackController, "This software was developed by Mehmet, Soheil, Jaqub and Hassan\n\n For more information, please contact us. All right reserved", "About us", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		mnFile.add(mntmAbout);
@@ -373,6 +388,53 @@ public class MainGUI {
 		txtVMax.setColumns(10);
 		txtVMax.setBounds(215, 208, 146, 19);
 		frmStateFeedbackController.getContentPane().add(txtVMax);
+		
+		JLabel lblChooseAProcess = new JLabel("Choose a process:");
+		lblChooseAProcess.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblChooseAProcess.setBounds(33, 238, 111, 15);
+		frmStateFeedbackController.getContentPane().add(lblChooseAProcess);
+		
+		comboBoxProcess = new JComboBox(new String[] {"Watertank", "DC Servo", "Other"});
+		comboBoxProcess.setFont(new Font("Dialog", Font.PLAIN, 12));
+		comboBoxProcess.setToolTipText("Helps the user to define the model for the chosen process. Currently there is only support for the watertank process and DC Servo. Choose 'Other' if you wish to run a different process, and enter the model manually.");
+
+		comboBoxProcess.setSelectedIndex(0);
+		comboBoxProcess.setBounds(215, 236, 146, 20);
+		frmStateFeedbackController.getContentPane().add(comboBoxProcess);
+		comboBoxProcess.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setParameters(String.valueOf(comboBoxProcess.getSelectedItem()));
+			}
+		});
+	}
+	
+	public String getProcess() {
+		return String.valueOf(comboBoxProcess.getSelectedItem());
+	}
+	
+	private void setParameters(String processName) {
+		if(processName.equals("Other")) {
+			txtA.setText("");
+			txtB.setText("");
+			txtC.setText("");
+			txtD.setText("");
+			txtFeedbackPole.setText("");
+			txtInterval.setText("");
+			txtObserverPole.setText("");
+			txtVMax.setText("");
+			txtVMin.setText("");;
+		} else {
+			MyProcess p = theProcesses.get(processName);
+			txtA.setText(p.A);
+			txtB.setText(p.B);
+			txtC.setText(p.C);
+			txtD.setText(p.D);
+			txtInterval.setText(p.interval);
+			txtVMax.setText(p.V_MAX);
+			txtVMin.setText(p.V_MIN);
+			txtFeedbackPole.setText(p.feedbackPolePlacement);
+			txtObserverPole.setText(p.observerPolePlacement);
+		}
 	}
 	
 	public void printErrorMessage(String warning){
