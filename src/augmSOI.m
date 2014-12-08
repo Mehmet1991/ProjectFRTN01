@@ -68,4 +68,9 @@ By = [K;Kw;1];
 Br = [Gamma*Lc ;0 ;0];
 
 Gpr = ss(Anew,By,[C 0 0],0,h);
+<<<<<<< HEAD
 stepplot(Gpr)
+=======
+stepplot(Gpr)
+
+>>>>>>> branch 'master' of https://github.com/Mehmet1991/ProjectFRTN01
