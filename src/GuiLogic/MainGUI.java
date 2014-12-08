@@ -49,10 +49,11 @@ public class MainGUI {
 	private JTextField txtFeedbackPole;
 	private JTextField txtObserverPole;
 	private TextArea textAreaWarnings;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxProcess;
 	private MatlabCommands mc;
 	private Validation validator;
-	private JButton btnStart;
+	private JButton btnStart, btnUpdate, btnStop;
 	private JTextField txtVMin;
 	private JTextField txtVMax;
 	private double vMin, vMax = 0;
@@ -94,17 +95,25 @@ public class MainGUI {
 	public MainGUI() {
 		validator = new Validation(this);
 		theProcesses = new HashMap<String, MyProcess>();
-		MyProcess watertank = new MyProcess("[-0.0502 0 ; 0.0502 -0.0502]", "[0.2500 ; 0]", "[0 1]", "[0]", "0", "10", "0.1", "Vad ska detta vara :S", "Ingen aning bror");
-		MyProcess DCServo = new MyProcess("[-0.12 0 ; 5 0]", "[2.25 ; 0]", "[0 1]", "[0]", "0", "10", "0.1", "Vad ska detta vara :S", "Ingen aning bror");
+		MyProcess watertank = new MyProcess("[-0.0502 0 ; 0.0502 -0.0502]", "[0.2500 ; 0]", "[0 1]", "[0]", "0", "10", "0.1", "1 0.525 0.140625", "1 0.36 0.054 0.003375");
+		MyProcess DCServo = new MyProcess("[-0.12 0 ; 5 0]", "[2.25 ; 0]", "[0 1]", "[0]", "-10", "10", "0.1", "Vad ska detta vara :S", "Ingen aning bror");
 		theProcesses.put("Watertank", watertank);
 		theProcesses.put("DC Servo", DCServo);
 		initialize();
 		setParameters("Watertank");
+		try {
+			initiateMatlab();
+		} catch (MatlabConnectionException | IOException
+				| MatlabInvocationException e) {
+			printErrorMessage("Could not run matlab, program failure.");
+			btnUpdate.setEnabled(false);
+		}
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initialize() {
 		frmStateFeedbackController = new JFrame();
 		frmStateFeedbackController.addWindowListener(new WindowAdapter() {
@@ -217,7 +226,8 @@ public class MainGUI {
 				try {
 					if(savedParams){
 						btnStart.setEnabled(false);
-						initiateMatlab();
+						btnStop.setEnabled(true);
+						btnUpdate.setEnabled(false);
 						mc.performEval();
 						OpCom opCom = new OpCom();
 						reader = new Reader(opCom);
@@ -227,14 +237,13 @@ public class MainGUI {
 						ReferenceGenerator refgen = new ReferenceGenerator(10, 0);
 						refgen.start();
 						if(yChan == null){
-							yChannel = getProcess().equals("Watertank") ? 31 : 0;
 							yChan = new AnalogIn(yChannel);
 						}
 						if(uChan == null){
-							uChannel = getProcess().equals("Watertank") ? 30 : 0;
 							uChan = new AnalogOut(uChannel);
 						}
-						regulator = new Regulator(reader, validator, new StateFeedback(mc), refgen, yChan, uChan, vMin, vMax);
+						double interval = Double.valueOf(txtInterval.getText());
+						regulator = new Regulator(reader, validator, new StateFeedback(mc), refgen, yChan, uChan, vMin, vMax, interval);
 						regulator.start();
 						isStarted = true;
 						plotterCreated = true;
@@ -248,12 +257,16 @@ public class MainGUI {
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnStart.setBackground(Color.LIGHT_GRAY);
 		btnStart.setBounds(602, 188, 80, 25);
+		btnStart.setEnabled(false);
 		frmStateFeedbackController.getContentPane().add(btnStart);
 		
-		JButton btnStop = new JButton("Stop");
+		btnStop = new JButton("Stop");
+		btnStop.setEnabled(false);
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				btnStop.setEnabled(false);
 				btnStart.setEnabled(true);
+				btnUpdate.setEnabled(true);
 				isStarted = false;
 				regulator.interrupt();
 			
@@ -338,9 +351,9 @@ public class MainGUI {
 		});
 		mnFile.add(mntmAbout);
 		
-		JButton btnNewButton = new JButton("Update parameters");
-		btnNewButton.setBackground(Color.LIGHT_GRAY);
-		btnNewButton.addActionListener(new ActionListener() {
+		btnUpdate = new JButton("Update parameters");
+		btnUpdate.setBackground(Color.LIGHT_GRAY);
+		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				boolean result = true;
 				String A = txtA.getText().trim();
@@ -350,22 +363,33 @@ public class MainGUI {
 				String h = txtInterval.getText().trim();
 				String fPole = txtFeedbackPole.getText().trim();
 				String oPole = txtObserverPole.getText().trim();
+				String vMinString = txtVMin.getText().trim();
+				String vMaxString = txtVMax.getText().trim();
 				result &= validator.validateMatrices(A, B, C, D);
 				result &= validator.validateSamplingInterval(h);
 				result &= validator.validateFeedbackPole(fPole);
 				result &= validator.validateObserverPole(oPole);
+				result &= validator.validateBounds(vMinString, vMaxString);
 				if(result){
 					try {
 						mc.setParams(A,B,C,D, h, fPole, oPole);
+						vMin = Double.valueOf(vMinString);
+						vMax = Double.valueOf(vMaxString);
 						savedParams = true;
+						btnStart.setEnabled(true);
+						yChannel = getProcess().equals("Watertank") ? 31 : 0;
+						System.out.println(yChannel);
+						uChannel = getProcess().equals("Watertank") ? 30 : 0;
+						System.out.println(uChannel);
+						printErrorMessage("Update successful!");
 					} catch (MatlabInvocationException e) {
 						printErrorMessage(e.getMessage());
 					}
 				}
 			}
 		});
-		btnNewButton.setBounds(455, 190, 137, 23);
-		frmStateFeedbackController.getContentPane().add(btnNewButton);
+		btnUpdate.setBounds(455, 190, 137, 23);
+		frmStateFeedbackController.getContentPane().add(btnUpdate);
 		
 		JLabel lblVmin = new JLabel("V-min:");
 		lblVmin.setFont(new Font("Dialog", Font.PLAIN, 12));

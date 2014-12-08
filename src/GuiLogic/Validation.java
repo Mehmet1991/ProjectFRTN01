@@ -94,5 +94,15 @@ public class Validation {
 		gui.printErrorMessage(message);
 		
 	}
+
+	public boolean validateBounds(String vMinString, String vMaxString) {
+		try{
+			double min = Double.valueOf(vMinString);
+			double max = Double.valueOf(vMaxString);
+			return min < max;
+		}catch(NumberFormatException e){
+			return false;
+		}
+	}
 }
 

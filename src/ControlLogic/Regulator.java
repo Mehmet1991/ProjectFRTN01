@@ -15,8 +15,9 @@ public class Regulator extends Thread{
     private double minValue, maxValue;
     private Reader reader;
     private boolean isSimulation = false;
+    private double interval;
 	
-	public Regulator(Reader reader, Validation validation, StateFeedback stateFeedback, ReferenceGenerator refgen, AnalogIn yChan, AnalogOut uChan, double vMin, double vMax) throws IOChannelException{
+	public Regulator(Reader reader, Validation validation, StateFeedback stateFeedback, ReferenceGenerator refgen, AnalogIn yChan, AnalogOut uChan, double vMin, double vMax, double interval) throws IOChannelException{
 		this.validation = validation;
 		this.stateFeedback = stateFeedback;
 		this.refgen = refgen;
@@ -27,8 +28,7 @@ public class Regulator extends Thread{
 		}
 		minValue = vMin;
 		maxValue = vMax;
-		minValue = 0;
-		maxValue = 10;
+		this.interval = interval;
 	}
 	
 	@Override
@@ -57,9 +57,10 @@ public class Regulator extends Thread{
 			if(!isSimulation){
 				try {
 					uChan.set(u);
+					System.out.println("Value of u: " + u);
 					long duration = System.currentTimeMillis() - start;
 					try{
-						sleep((long) (0.1 * 1000 - duration));
+						sleep((long) (interval * 1000 - duration));
 					}catch(InterruptedException e){
 						break;
 					}

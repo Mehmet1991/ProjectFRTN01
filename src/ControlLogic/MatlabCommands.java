@@ -68,6 +68,6 @@ public class MatlabCommands {
 
 	public void setParams(String a, String b, String c, String d, String h,
 			String fPole, String oPole) throws MatlabInvocationException {
-		proxy.eval("A = " + a + "; B = " +  b + "; C = " + c + "; D = " + d + "; h = " + h + "; fPole = " + fPole +"; oPole = " + oPole  + ";");
+		proxy.eval("A = " + a + "; B = " +  b + "; C = " + c + "; D = " + d + "; h = " + h + "; fPole = [" + fPole +"]; oPole = [" + oPole  + "];");
 	}
 }
