@@ -53,7 +53,7 @@ public class MainGUI {
 	private JComboBox comboBoxProcess;
 	private MatlabCommands mc;
 	private Validation validator;
-	private JButton btnStart, btnUpdate, btnStop;
+	private JButton btnStart, btnUpdate, btnStop, btnPlot;
 	private JTextField txtVMin;
 	private JTextField txtVMax;
 	private double vMin, vMax = 0;
@@ -96,7 +96,7 @@ public class MainGUI {
 		validator = new Validation(this);
 		theProcesses = new HashMap<String, MyProcess>();
 		MyProcess watertank = new MyProcess("[-0.0502 0 ; 0.0502 -0.0502]", "[0.2500 ; 0]", "[0 1]", "[0]", "0", "10", "0.1", "1 0.525 0.140625", "1 0.36 0.054 0.003375");
-		MyProcess DCServo = new MyProcess("[-0.12 0 ; 5 0]", "[2.25 ; 0]", "[0 1]", "[0]", "-10", "10", "0.1", "Vad ska detta vara :S", "Ingen aning bror");
+		MyProcess DCServo = new MyProcess("[-0.12 0 ; 5 0]", "[2.25 ; 0]", "[0 1]", "[0]", "-10", "10", "0.1", "1 4.308 6.186", "1 15.14 86.12 187.4");
 		theProcesses.put("Watertank", watertank);
 		theProcesses.put("DC Servo", DCServo);
 		initialize();
@@ -228,7 +228,6 @@ public class MainGUI {
 						btnStart.setEnabled(false);
 						btnStop.setEnabled(true);
 						btnUpdate.setEnabled(false);
-						mc.performEval();
 						OpCom opCom = new OpCom();
 						reader = new Reader(opCom);
 						opCom.initializeGUI();
@@ -249,7 +248,7 @@ public class MainGUI {
 						plotterCreated = true;
 						refgenCreated = true;
 					}
-				} catch (MatlabInvocationException | MatlabConnectionException | IOException e) {
+				} catch (IOException e) {
 					printErrorMessage(e.getLocalizedMessage());
 				}
 			}
@@ -377,10 +376,16 @@ public class MainGUI {
 						vMax = Double.valueOf(vMaxString);
 						savedParams = true;
 						btnStart.setEnabled(true);
+						btnPlot.setEnabled(true);
 						yChannel = getProcess().equals("Watertank") ? 31 : 0;
 						System.out.println(yChannel);
 						uChannel = getProcess().equals("Watertank") ? 30 : 0;
 						System.out.println(uChannel);
+						try {
+							mc.performEval();
+						} catch (MatlabConnectionException e) {
+							printErrorMessage(e.getLocalizedMessage());
+						}
 						printErrorMessage("Update successful!");
 					} catch (MatlabInvocationException e) {
 						printErrorMessage(e.getMessage());
@@ -425,6 +430,21 @@ public class MainGUI {
 		comboBoxProcess.setSelectedIndex(0);
 		comboBoxProcess.setBounds(215, 236, 146, 20);
 		frmStateFeedbackController.getContentPane().add(comboBoxProcess);
+		
+		btnPlot = new JButton("Plot step design");
+		btnPlot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					mc.plotStep();
+				} catch (MatlabInvocationException e1) {
+					printErrorMessage("Could not plot the step respons. Please try again later");
+				}
+			}
+		});
+		btnPlot.setEnabled(false);
+		btnPlot.setBackground(Color.LIGHT_GRAY);
+		btnPlot.setBounds(455, 225, 137, 23);
+		frmStateFeedbackController.getContentPane().add(btnPlot);
 		comboBoxProcess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				setParameters(String.valueOf(comboBoxProcess.getSelectedItem()));

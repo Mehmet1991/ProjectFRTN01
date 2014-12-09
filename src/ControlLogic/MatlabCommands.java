@@ -70,4 +70,8 @@ public class MatlabCommands {
 			String fPole, String oPole) throws MatlabInvocationException {
 		proxy.eval("A = " + a + "; B = " +  b + "; C = " + c + "; D = " + d + "; h = " + h + "; fPole = [" + fPole +"]; oPole = [" + oPole  + "];");
 	}
+	
+	public void plotStep() throws MatlabInvocationException{
+		proxy.eval("Gpr = ss(Anew,By,[C 0 0],0,h);stepplot(Gpr);");
+	}
 }
