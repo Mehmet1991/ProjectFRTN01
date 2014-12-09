@@ -377,8 +377,10 @@ public class MainGUI {
 						btnStart.setEnabled(true);
 						btnPlot.setEnabled(true);
 						yChannel = getProcess().equals("Watertank") ? 31 : 0;
+						yChan = null;
 						System.out.println(yChannel);
 						uChannel = getProcess().equals("Watertank") ? 30 : 0;
+						uChan = null;
 						System.out.println(uChannel);
 						try {
 							mc.performEval();

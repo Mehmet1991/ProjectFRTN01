@@ -63,7 +63,7 @@ public class OpCom {
 		  // Create a panel for the two plotters.
 		  plotterPanel = new BoxPanel(BoxPanel.VERTICAL);
 		  // Create plot components and axes, add to plotterPanel.
-		  measurementPlotter.setYAxis(40, -20, 4, 4);
+		  measurementPlotter.setYAxis(22, -11, 4, 4);
 		  measurementPlotter.setXAxis(range, divTicks, divGrid);
 		  measurementPlotter.setTitle("Process signals");
 		  plotterPanel.add(measurementPlotter);
