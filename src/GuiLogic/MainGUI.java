@@ -233,7 +233,7 @@ public class MainGUI {
 						opCom.initializeGUI();
 						opCom.start();
 						reader.start();
-						ReferenceGenerator refgen = new ReferenceGenerator(10, 0);
+						ReferenceGenerator refgen = new ReferenceGenerator(0, 0);
 						refgen.start();
 						if(yChan == null){
 							yChan = new AnalogIn(yChannel);
@@ -431,7 +431,7 @@ public class MainGUI {
 		comboBoxProcess.setBounds(215, 236, 146, 20);
 		frmStateFeedbackController.getContentPane().add(comboBoxProcess);
 		
-		btnPlot = new JButton("Plot step design");
+		btnPlot = new JButton("Plot step response");
 		btnPlot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {

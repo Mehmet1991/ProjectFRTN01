@@ -14,18 +14,13 @@ public class MatlabCommands {
 	public MatlabProxy proxy;
 	
 	public MatlabCommands() throws MatlabConnectionException, MatlabInvocationException {
-		/*
-		 * �ndra till .setHidden(false) f�r att kunna se exakt vad som h�nder i matlab
-		 */
-		options = new MatlabProxyFactoryOptions.Builder().setMatlabStartingDirectory(new File("src/")).setHidden(false).build();
+		options = new MatlabProxyFactoryOptions.Builder().setMatlabStartingDirectory(new File("src/")).setHidden(true).build();
 		factory = new MatlabProxyFactory(options);
 		proxy = factory.getProxy();
 		proxy.eval("addpath('" + new File("src").getAbsolutePath() + "')");
 	}
 
-	public void performEval() throws MatlabInvocationException, MatlabConnectionException {	
-		//proxy.eval("SOIdesignCT");
-//		proxy.eval("SOIDesign");
+	public void performEval() throws MatlabInvocationException, MatlabConnectionException {
 		proxy.eval("augmSOI");
 	}
 	
@@ -62,7 +57,6 @@ public class MatlabCommands {
 
 	public double[] updateStates() throws MatlabInvocationException {
 		proxy.eval("intermediate = Anew*[xhat;vhat;e] + By*y + Br*uc; xhat=intermediate(1:size(A,1)); vhat=intermediate(size(A,1)+1); e=intermediate(size(A,1)+2)");
-		//proxy.eval("intermediate = AR*[xhat ; xi] + BRy*y + BRr*uc;xhat=intermediate(1:size(intermediate,1)-1);xi=intermediate(size(intermediate,1));");
 		return getVariables("xhat");
 	}
 
@@ -72,6 +66,6 @@ public class MatlabCommands {
 	}
 	
 	public void plotStep() throws MatlabInvocationException{
-		proxy.eval("Gpr = ss(Anew,By,[C 0 0],0,h);stepplot(Gpr);");
+		proxy.eval("stepplot(Gpr);");
 	}
 }
