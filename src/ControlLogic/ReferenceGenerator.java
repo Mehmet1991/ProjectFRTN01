@@ -55,12 +55,12 @@ public class ReferenceGenerator extends Thread {
 					} else {
 						tempValue = -1.0;
 					}
-					if (tempValue < 0.0) {
-						Double d1 = new Double(amplitude);
-						paramsAmpField.setText(d1.toString());
-					} else {
+//					if (tempValue < 0.0) {
+//						Double d1 = new Double(amplitude);
+//						paramsAmpField.setText(d1.toString());
+//					} else {
 						amplitude = tempValue;
-					}
+//					}
 				}
 			});
 			paramsPeriodField.addActionListener(new ActionListener() {

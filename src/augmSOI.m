@@ -31,27 +31,27 @@ Hp = c2d(Gp,h);
 
 %state feedback design
 
-%w2 =1.5*0.15;
-%zeta2 = 2.45;
-%po = roots([1 2*zeta2*w2 w2^2]);
+w2 =1.5*0.15;
+zeta2 = 0.7;
+po = roots([1 2*zeta2*w2 w2^2]);
 
-pod = exp(polesWTstate*h);
+pod = exp(po*h);
 L = place(Phi,Gamma,pod)
 %L = place(Phi,Gamma,polesDCstate)
 Lc = 1/(C*inv(eye(size(A,1))-Phi+Gamma*L)*Gamma);
 
 %augmented disturbance observer design
 
-%a = 1.1;
-%w = 0.30;
-%zeta = 1.85;
-%s2kv = a*w + 2*zeta*w;
-%skv = 2*a*zeta*w^2 + w^2;
-%konst = a*w^3;
+a = 1;
+w = 0.15;
+zeta = 0.7;
+s2kv = a*w + 2*zeta*w;
+skv = 2*a*zeta*w^2 + w^2;
+konst = a*w^3;
 
-%pc = [1 s2kv skv konst];
-%pc = roots(pc);
-pcd = exp(polesWTobs*h); 
+pc = [1 s2kv skv konst];
+pc = roots(pc);
+pcd = exp(pc*h); 
 
 Phie = [Phi Gamma; zeros(1,size(A,1)) 1];
 Gamnew = [Gamma ; 0];
@@ -69,3 +69,4 @@ Br = [Gamma*Lc ;0 ;0];
 
 Gpr = ss(Anew,By,[C 0 0],0,h);
 stepplot(Gpr)
+

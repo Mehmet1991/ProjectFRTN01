@@ -28,6 +28,7 @@ public class OpCom {
     private BoxPanel plotterPanel;
 
     private double range = 10.0; // Range of time axis
+    
     private int divTicks = 5;    // Number of ticks on time axis
     private int divGrid = 5;     // Number of grids on time axis
 
@@ -62,12 +63,12 @@ public class OpCom {
 		  // Create a panel for the two plotters.
 		  plotterPanel = new BoxPanel(BoxPanel.VERTICAL);
 		  // Create plot components and axes, add to plotterPanel.
-		  measurementPlotter.setYAxis(20, -10, 4, 4);
+		  measurementPlotter.setYAxis(40, -20, 4, 4);
 		  measurementPlotter.setXAxis(range, divTicks, divGrid);
 		  measurementPlotter.setTitle("Process signals");
 		  plotterPanel.add(measurementPlotter);
 		  plotterPanel.addFixed(10);
-		  controlPlotter.setYAxis(20, -10, 4, 4);
+		  controlPlotter.setYAxis(40, -20, 4, 4);
 		  controlPlotter.setXAxis(range, divTicks, divGrid);
 		  controlPlotter.setTitle("Feedback states");
 		  plotterPanel.add(controlPlotter);
