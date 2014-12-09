@@ -14,7 +14,6 @@ public class Regulator extends Thread{
     private AnalogOut uChan;
     private double minValue, maxValue;
     private Reader reader;
-    private boolean isSimulation = false;
     private double interval;
 	
 	public Regulator(Reader reader, Validation validation, MatlabCommands matlabCommands, ReferenceGenerator refgen, AnalogIn yChan, AnalogOut uChan, double vMin, double vMax, double interval) throws IOChannelException{
@@ -22,10 +21,8 @@ public class Regulator extends Thread{
 		this.mc = matlabCommands;
 		this.refgen = refgen;
 		this.reader = reader;
-		if(!isSimulation){
-			this.yChan = yChan;
-			this.uChan = uChan;
-		}
+		this.yChan = yChan;
+		this.uChan = uChan;
 		minValue = vMin;
 		maxValue = vMax;
 		this.interval = interval;
@@ -38,15 +35,11 @@ public class Regulator extends Thread{
 			double u = 0;
 			double yRef = refgen.getRef() ;
 			double y = 0;
-			if(isSimulation){
-				y = yRef * 2;
-			}else{
-				try {
-					y = yChan.get();
-				} catch (IOChannelException e) {
-					System.err.println("Could not read y.");
-				} 
-			}
+			try {
+				y = yChan.get();
+			} catch (IOChannelException e) {
+				System.err.println("Could not read y.");
+			} 
 			try {
 				
 				u = mc.calculateU(y, yRef);
@@ -54,19 +47,17 @@ public class Regulator extends Thread{
 				validation.setError(e.toString());
 			}
 			u = limit(u);
-			if(!isSimulation){
-				try {
-					uChan.set(u);
-					System.out.println("Value of u: " + u);
-					long duration = System.currentTimeMillis() - start;
-					try{
-						sleep((long) (interval * 1000 - duration));
-					}catch(InterruptedException e){
-						break;
-					}
-				} catch (Exception e) {
-					System.err.println("Couldn't set u.");
+			try {
+				uChan.set(u);
+				System.out.println("Value of u: " + u);
+				long duration = System.currentTimeMillis() - start;
+				try{
+					sleep((long) (interval * 1000 - duration));
+				}catch(InterruptedException e){
+					break;
 				}
+			} catch (Exception e) {
+				System.err.println("Couldn't set u.");
 			}
 			try {
 				double[] states = mc.updateStates();
