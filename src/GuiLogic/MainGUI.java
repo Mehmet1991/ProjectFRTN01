@@ -33,7 +33,6 @@ import ControlLogic.MatlabCommands;
 import ControlLogic.MyProcess;
 import ControlLogic.ReferenceGenerator;
 import ControlLogic.Regulator;
-import ControlLogic.StateFeedback;
 
 
 public class MainGUI {
@@ -242,7 +241,7 @@ public class MainGUI {
 							uChan = new AnalogOut(uChannel);
 						}
 						double interval = Double.valueOf(txtInterval.getText());
-						regulator = new Regulator(reader, validator, new StateFeedback(mc), refgen, yChan, uChan, vMin, vMax, interval);
+						regulator = new Regulator(reader, validator, mc, refgen, yChan, uChan, vMin, vMax, interval);
 						regulator.start();
 						isStarted = true;
 						plotterCreated = true;

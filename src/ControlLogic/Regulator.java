@@ -8,7 +8,7 @@ import se.lth.control.realtime.IOChannelException;
 
 public class Regulator extends Thread{
 	private Validation validation;
-	private StateFeedback stateFeedback;
+	private MatlabCommands mc;
 	private ReferenceGenerator refgen;
 	private AnalogIn yChan;
     private AnalogOut uChan;
@@ -17,9 +17,9 @@ public class Regulator extends Thread{
     private boolean isSimulation = false;
     private double interval;
 	
-	public Regulator(Reader reader, Validation validation, StateFeedback stateFeedback, ReferenceGenerator refgen, AnalogIn yChan, AnalogOut uChan, double vMin, double vMax, double interval) throws IOChannelException{
+	public Regulator(Reader reader, Validation validation, MatlabCommands matlabCommands, ReferenceGenerator refgen, AnalogIn yChan, AnalogOut uChan, double vMin, double vMax, double interval) throws IOChannelException{
 		this.validation = validation;
-		this.stateFeedback = stateFeedback;
+		this.mc = matlabCommands;
 		this.refgen = refgen;
 		this.reader = reader;
 		if(!isSimulation){
@@ -49,7 +49,7 @@ public class Regulator extends Thread{
 			}
 			try {
 				
-				u = stateFeedback.calculateOutput(y, yRef) ;
+				u = mc.calculateU(y, yRef);
 			}catch (MatlabInvocationException e) {
 				validation.setError(e.toString());
 			}
@@ -69,7 +69,7 @@ public class Regulator extends Thread{
 				}
 			}
 			try {
-				double[] states = stateFeedback.updateState();
+				double[] states = mc.updateStates();
 				reader.updateParams(u, y, yRef , states);
 			} catch (MatlabInvocationException e) {
 				validation.setError(e.getMessage());
