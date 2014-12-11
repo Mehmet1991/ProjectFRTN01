@@ -99,8 +99,14 @@ public class Validation {
 		try{
 			double min = Double.valueOf(vMinString);
 			double max = Double.valueOf(vMaxString);
-			return min < max;
+			if(min <= max){
+				return true;
+			}else{
+				gui.printErrorMessage("V-min must be smaller than V-max!");
+				return false;
+			}
 		}catch(NumberFormatException e){
+			gui.printErrorMessage("V-min and V-max must be double values!");
 			return false;
 		}
 	}
