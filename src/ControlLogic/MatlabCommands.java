@@ -66,6 +66,6 @@ public class MatlabCommands {
 	}
 	
 	public void plotStep() throws MatlabInvocationException{
-		proxy.eval("stepplot(Gpr);");
+		proxy.eval("step(Gpr); grid; title('Step response');");
 	}
 }

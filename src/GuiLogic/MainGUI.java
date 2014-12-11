@@ -29,6 +29,8 @@ import matlabcontrol.MatlabInvocationException;
 import se.lth.control.realtime.AnalogIn;
 import se.lth.control.realtime.AnalogOut;
 import se.lth.control.realtime.IOChannelException;
+import se.lth.control.realtime.comedi.Comedi;
+import se.lth.control.realtime.comedi.ComediException;
 import ControlLogic.MatlabCommands;
 import ControlLogic.MyProcess;
 import ControlLogic.ReferenceGenerator;
@@ -56,8 +58,8 @@ public class MainGUI {
 	private JTextField txtVMin;
 	private JTextField txtVMax;
 	private double vMin, vMax = 0;
-	private AnalogIn yChan;
-    private AnalogOut uChan;
+	private AnalogIn yChan,yChanWT, yChanDefault;
+    private AnalogOut uChan,uChanWT, uChanDefault;
 	
 	private Reader reader;
 	private Regulator regulator;
@@ -99,6 +101,14 @@ public class MainGUI {
 		theProcesses.put("Watertank", watertank);
 		theProcesses.put("DC Servo", DCServo);
 		initialize();
+	    try {
+		    yChanWT = new AnalogIn(31);
+		    uChanWT = new AnalogOut(30);
+			yChanDefault = new AnalogIn(0);
+		    uChanDefault = new AnalogOut(0);
+		} catch (IOChannelException e2) {
+			printErrorMessage("Could not open the channels!");
+		}
 		setParameters("Watertank");
 		try {
 			initiateMatlab();
@@ -234,12 +244,6 @@ public class MainGUI {
 						reader.start();
 						ReferenceGenerator refgen = new ReferenceGenerator(0, 0);
 						refgen.start();
-						if(yChan == null){
-							yChan = new AnalogIn(yChannel);
-						}
-						if(uChan == null){
-							uChan = new AnalogOut(uChannel);
-						}
 						double interval = Double.valueOf(txtInterval.getText());
 						regulator = new Regulator(reader, validator, mc, refgen, yChan, uChan, vMin, vMax, interval);
 						regulator.start();
@@ -376,12 +380,13 @@ public class MainGUI {
 						savedParams = true;
 						btnStart.setEnabled(true);
 						btnPlot.setEnabled(true);
-						yChannel = getProcess().equals("Watertank") ? 31 : 0;
-						yChan = null;
-						System.out.println(yChannel);
-						uChannel = getProcess().equals("Watertank") ? 30 : 0;
-						uChan = null;
-						System.out.println(uChannel);
+						if(getProcess().equals("Watertank")){
+							yChan = yChanWT;
+							uChan = uChanWT;
+						}else{
+							yChan = yChanDefault;
+							uChan = uChanDefault;
+						}
 						try {
 							mc.performEval();
 						} catch (MatlabConnectionException e) {

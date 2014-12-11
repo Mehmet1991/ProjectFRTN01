@@ -49,7 +49,6 @@ public class Regulator extends Thread{
 			u = limit(u);
 			try {
 				uChan.set(u);
-				System.out.println("Value of u: " + u);
 				long duration = System.currentTimeMillis() - start;
 				try{
 					sleep((long) (interval * 1000 - duration));
