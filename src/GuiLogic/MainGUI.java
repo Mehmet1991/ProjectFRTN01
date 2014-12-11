@@ -101,14 +101,6 @@ public class MainGUI {
 		theProcesses.put("Watertank", watertank);
 		theProcesses.put("DC Servo", DCServo);
 		initialize();
-	    try {
-		    yChanWT = new AnalogIn(31);
-		    uChanWT = new AnalogOut(30);
-			yChanDefault = new AnalogIn(0);
-		    uChanDefault = new AnalogOut(0);
-		} catch (IOChannelException e2) {
-			printErrorMessage("Could not open the channels!");
-		}
 		setParameters("Watertank");
 		try {
 			initiateMatlab();
@@ -381,9 +373,37 @@ public class MainGUI {
 						btnStart.setEnabled(true);
 						btnPlot.setEnabled(true);
 						if(getProcess().equals("Watertank")){
+							if(yChanWT == null){
+								try {
+									yChanWT = new AnalogIn(31);
+								} catch (IOChannelException e2) {
+									printErrorMessage("Could not open input channel 31!");
+								}
+							}
+							if(uChanWT == null){
+								try {
+								    uChanWT = new AnalogOut(30);
+								} catch (IOChannelException e2) {
+									printErrorMessage("Could not open output channel 30!");
+								}
+							}
 							yChan = yChanWT;
 							uChan = uChanWT;
 						}else{
+							if(yChanDefault == null){
+								try {
+									yChanDefault = new AnalogIn(0);
+								} catch (IOChannelException e2) {
+									printErrorMessage("Could not open input channel 0!");
+								}
+							}
+							if(uChanDefault == null){
+								try {
+									uChanDefault = new AnalogOut(0);
+								} catch (IOChannelException e2) {
+									printErrorMessage("Could not open output channel 0!");
+								}
+							}
 							yChan = yChanDefault;
 							uChan = uChanDefault;
 						}
